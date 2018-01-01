@@ -19,5 +19,7 @@ for index, signal_frequency in enumerate(signal_frequencies_hz):
     ax.plot(time_base, signal, c='k', lw=2)
 
 joint_signal = signals[0] + signals[1]
-ax = plt.subplot(3, 1, len(signal_frequencies_hz))
+ax = plt.subplot(3, 1, len(signal_frequencies_hz)+1)
 ax.plot(time_base, joint_signal,  c='k', lw=2)
+
+fig.show()
