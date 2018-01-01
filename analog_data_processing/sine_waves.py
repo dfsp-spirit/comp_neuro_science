@@ -2,7 +2,6 @@
 # You can tweak the frequencies below, see the signal_frequencies_hz variable.abs
 #
 # Note: If the matplotlib window does not show up, ensure that you have configured a proper backend in your matplotlib config file. Try 'tkagg' on Linux.
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
