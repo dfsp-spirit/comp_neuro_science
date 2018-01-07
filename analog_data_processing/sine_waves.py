@@ -4,13 +4,22 @@
 # Note: If the matplotlib window does not show up, ensure that you have configured a proper backend in your matplotlib config file. Try 'tkagg' on Linux.
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
+
+parser = argparse.ArgumentParser(prog='sin_waves.py', description='Plot sine waves with user-defined frequencies, and their sum.', epilog='Try: python %(prog)s 3 5 8')
+parser.add_argument('integers', metavar='N', type=int, nargs='+',
+                    help='Signal frequency in hz')
+args = parser.parse_args()
 
 
 duration_secs = 5
 sampling_frequency_hz = 1000
+default_signal_frequencies_hz = [10, 7, 5]
 time_base = np.linspace(0, duration_secs, sampling_frequency_hz * duration_secs)
 
-signal_frequencies_hz = [10, 7, 5]
+signal_frequencies_hz = args.integers
+if not signal_frequencies_hz:
+    signal_frequencies_hz = default_signal_frequencies_hz
 
 fig = plt.figure()
 num_plot_rows = len(signal_frequencies_hz)+1
