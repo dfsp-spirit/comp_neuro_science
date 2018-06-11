@@ -14,6 +14,16 @@ Implementation of various curvature descriptors for a point on a 3D surface, bas
     intrinsic_curvature_index = curv_calculator.intrinsic_curvature_index();
     ...
 
+Note that the return value of all these functions in a struct that contains the following fields:
+
+* data: the vector of computed descriptor values
+* name: string, name of the descriptor (e.g., 'Gaussian curvature')
+* description: string, description of the descriptor (e.g., 'the Gaussian curvature: K = k1 * k2')
+* suggested_plot_range: a suggested range of the values to plot (e.g., [-0.1, 0.3]).
+
+See the source code of a descriptor function in `CurvatureDescriptors.m` for more details, e.g., the function `gaussian_curvature`.
+
+
 ### Implemented descriptors
 
 The following descriptors are available:
