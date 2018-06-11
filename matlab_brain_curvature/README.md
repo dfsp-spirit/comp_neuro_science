@@ -1,6 +1,22 @@
 ## Brain curvature descriptors
 
-Implementation of various curvature descriptors for a point on a 3D surface, based on the two principal curvatures k1 and k2. The implementation assumes you already have k1 and k2 values for each point on the surface. The implementation is in the CurvatureDescriptors.m file. The following descriptors are available:
+Implementation of various curvature descriptors for a point on a 3D surface, based on the two principal curvatures k1 and k2. The implementation assumes you already have k1 and k2 values for each point on the surface. The implementation is in the CurvatureDescriptors.m file.
+
+
+### Usage
+
+    % Assuming k1 and k2 are the vectors containing the two principal curvatures for the points. Create instance:
+    curv_calculator = CurvatureDescriptors(k1, k2);
+
+    % ...and then have it compute the descriptors you want:
+    mean_curvature = curv_calculator.mean_curvature();
+    gaussian_curvature = curv_calculator.gaussian_curvature();
+    intrinsic_curvature_index = curv_calculator.intrinsic_curvature_index();
+    ...
+
+### Implemented descriptors
+
+The following descriptors are available:
 
 * principal_curvature_k1
 * principal_curvature_k2
