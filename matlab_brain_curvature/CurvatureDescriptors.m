@@ -272,7 +272,7 @@ classdef CurvatureDescriptors
                 end
             end
             if num_out_of_range > 0
-                msg = printf('WARNING: CurvatureDescriptors.shape_type: Received %d shape index values that were out of range.', num_out_of_range);
+                msg = sprintf('WARNING: CurvatureDescriptors.shape_type: Received %d shape index values that were out of range.', num_out_of_range);
                 disp(msg);
             end
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
