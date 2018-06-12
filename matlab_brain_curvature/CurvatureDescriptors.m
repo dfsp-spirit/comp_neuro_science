@@ -94,7 +94,7 @@ classdef CurvatureDescriptors
         function res = mean_curvature_index(obj)
             name = 'Mean curvature index';
             description = 'the mean curvature index: MCI = max(H, 0) where H is the mean curvature';
-            suggested_plot_range = [-0.5, 0.5];
+            suggested_plot_range = [0.0, 0.5];
             h = obj.mean_curvature().data;
             curv = max(0, h);
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
@@ -228,11 +228,12 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the shape index
+        % Computes the shape index, see Surface shape and curvatures
+        % scales, Jan j Koenderink and Andrea J van Doorn, 1992
         function res = shape_index(obj)
             name = 'Shape index (SI)';
             description = 'the shape index: SI = (2.0 / PI) * ATAN((k1 + k2) / (k2 - k1))';
-            suggested_plot_range = [0.0, 1.0];
+            suggested_plot_range = [-1.0, 1.0];
             curv = (2.0 / pi) * atan((obj.k1 + obj.k2) ./ (obj.k2 - obj.k1));
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
@@ -246,15 +247,10 @@ classdef CurvatureDescriptors
             si = obj.shape_index().data;
             curv = zeros(1, length(si));
             num_out_of_range = 0;
-            %border1 = -1.0;
-            %border2 = -0.5;
-            %border3 = 0.0;
-            %border4 = 0.5;
-            %border5 = 1.0;
-            border1 = 0.0;
-            border2 = 0.25;
-            border3 = 0.5;
-            border4 = 0.75;
+            border1 = -1.0;
+            border2 = -0.5;
+            border3 = 0.0;
+            border4 = 0.5;
             border5 = 1.0;
             for idx = 1:length(si)
                 val = si(idx);
@@ -272,8 +268,7 @@ classdef CurvatureDescriptors
                 end
             end
             if num_out_of_range > 0
-                msg = sprintf('WARNING: CurvatureDescriptors.shape_type: Received %d shape index values that were out of range.', num_out_of_range);
-                disp(msg);
+                fprintf('WARNING: CurvatureDescriptors.shape_type: Received %d shape index values that were out of range.', num_out_of_range);
             end
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end

@@ -35,6 +35,20 @@ k2 = vertcat(k2_lh, k2_rh);
 % http://brainvis.wustl.edu/wiki/index.php/Folding/Measurements for a full
 % list. Feel free to come up with and implement some more.
 
+
+% The k1 and k2 values we receive from Freesurfer/mris_curvature are 
+% determined by ordering the absolute values of the principal curvatures
+% (and assigning the larger one to k1 and the smaller one to k2, see the 
+% source code of mris_curvature for details), but we are interested in the
+% ordering based on the signed values. So we fix the ordering here if needed.
+for idx=1:length(k1)
+    if k1(idx) < k2(idx)
+        tmp = k1(idx);
+        k1(idx) = k2(idx);
+        k2(idx) = tmp;
+    end
+end
+
 curv_calculator = CurvatureDescriptors(k1, k2);
 
 % Compute all the descriptors:
@@ -62,7 +76,7 @@ sh2sh = curv_calculator.sh2sh();
 sk2sk = curv_calculator.sk2sk();
 
 %...but we only use/plot one of them. Make your choice:
-descriptor_to_plot = principal_curvature_k2;
+descriptor_to_plot = shape_index;
 
 plot_title = descriptor_to_plot.name;
 plot_range = descriptor_to_plot.suggested_plot_range;
@@ -84,7 +98,13 @@ colormap_blue_orange = [0 1 1
     1 0 0
     1 1 0];
 
+colormap_binary = [1 1 0
+    0 0 1
+    ];
+
+
 SurfStatView(descriptor_to_plot.data, display_surface, plot_title);
 SurfStatColormap('jet');
 %SurfStatColormap(colormap_blue_orange);
+%SurfStatColormap(colormap_binary);
 SurfStatColLim(plot_range);
