@@ -7,17 +7,19 @@ clc;
 clear;
 
 %% Settings - you will have to adapt them to your needs.
-subjects_dir = '/Users/timschaefer/data/tim_only/005_edits_fs/';
+subjects_dir = '/Users/timschaefer/data/tim_only/005_edits_fs/';    % The directory the Freesurfer environment variable $SUBJECTS_DIR points to, i.e., the directory containing the data for all your subjects. This can be any directory, just make sure the concatinated path that results in the end points to your data.
 %subjects_dir = '/home/spirit/data/tim_only/005_edits_fs/';
 
-subject_surf_dir = strcat(subjects_dir,'tim/surf/');
-measured_surface = 'pial';       % The surface for which you have measured curvature data from an mris_curvature run (see below). If you used ?h.pial, set this to 'pial' and this script will try to read the measured data from ?h.pial.max and ?h.pial.min.
-display_on_surface = 'inflated'; % The surface on which the data should be plotted. You can use the same surface you measured, but it is often better to use 'inflated' to see the values in deep sulci.
-%display_on_surface = 'pial';
+subject_surf_dir = strcat(subjects_dir,'tim/surf/');    % The relative path to the surface data of the example subject you want to use. Here, 'tim' is the subject id, and 'surf' is the default folder used by Freesurfer to store computed surface data for a subject.
+
+% Note: If you do not have MRI data or mris_curvature output yet and just want to test this script, you can check for example data in the directory 'example_data' of this repo. Just modify subject_surf_dir to point to that directory. Data for the 'pial' and 'white' surfaces can be found in the directory.
+measured_surface = 'white';       % The surface for which you have measured curvature data from an mris_curvature run (see below). If you used ?h.pial, set this to 'pial' and this script will try to read the measured data from ?h.pial.max and ?h.pial.min. These output files are expected to be in 'subject_surf_dir' for your subject.
+%display_on_surface = 'inflated'; % The surface on which the data should be plotted. You can use the same surface you measured, but it is often better to use 'inflated' to see the values in deep sulci.
+display_on_surface = 'white';
 
 
 %% Read input data
-% Note that you must generate the curvature file from a surface using mris_curvature in the system shell, see https://surfer.nmr.mgh.harvard.edu/fswiki/mris_curvature
+% Note that you must generate the curvature files for k1 and k2 from a surface using mris_curvature in the system shell, see https://surfer.nmr.mgh.harvard.edu/fswiki/mris_curvature
 % Example: mris_curvature -min -max -a 3 rh.pial && mris_curvature -min -max -a 3 lh.pial
 
 cd(subject_surf_dir);
@@ -31,14 +33,9 @@ k1_lh = read_curv(strcat('lh.', measured_surface, '.max'));
 k1 = vertcat(k1_lh, k1_rh);
 k2 = vertcat(k2_lh, k2_rh);
 
-% Different curvature descriptors are available in the CurvatureDescriptors class. See
-% http://brainvis.wustl.edu/wiki/index.php/Folding/Measurements for a full
-% list. Feel free to come up with and implement some more.
-
-
-% The k1 and k2 values we receive from Freesurfer/mris_curvature are 
+% The k1 and k2 values we receive from Freesurfer/mris_curvature are
 % determined by ordering the absolute values of the principal curvatures
-% (and assigning the larger one to k1 and the smaller one to k2, see the 
+% (and assigning the larger one to k1 and the smaller one to k2, see the
 % source code of mris_curvature for details), but we are interested in the
 % ordering based on the signed values. So we fix the ordering here if needed.
 for idx=1:length(k1)
@@ -48,6 +45,11 @@ for idx=1:length(k1)
         k2(idx) = tmp;
     end
 end
+
+
+% The different curvature descriptors are available in the CurvatureDescriptors class. See
+% http://brainvis.wustl.edu/wiki/index.php/Folding/Measurements for a full
+% list. Feel free to come up with and implement some more.
 
 curv_calculator = CurvatureDescriptors(k1, k2);
 
@@ -90,7 +92,7 @@ disp(descriptor_stats);
 
 %% Display the data on a surface. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
 %display_surf_dir = subjects_dir + 'fsaverage/surf';g
-display_surf_dir = subject_surf_dir;     % We use the surface of the subject itself in this demo case, since the data only consists of this single subject.
+display_surf_dir = subject_surf_dir;     % We use the surface of the subject itself in this demo case, since the data only consists of this single subject. You would usually plot on fsaverage for group comparison.
 display_surface = SurfStatReadSurf ( {strcat(display_surf_dir, strcat('lh.', display_on_surface)), strcat(display_surf_dir, strcat('rh.', display_on_surface))} );
 
 colormap_blue_orange = [0 1 1
@@ -98,6 +100,7 @@ colormap_blue_orange = [0 1 1
     1 0 0
     1 1 0];
 
+% A custom colormap useful for plotting descriptors which have binary output, e.g., area_fraction_of_mean_curvature_index.
 colormap_binary = [1 1 0
     0 0 1
     ];
