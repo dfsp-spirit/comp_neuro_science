@@ -87,7 +87,7 @@ plot_range = descriptor_to_plot.suggested_plot_range;
 %histogram(descriptor_to_plot.data)
 
 disp(descriptor_to_plot.description);
-descriptor_stats = sprintf('min=%.3f, max=%.3f, median=%.3f, mean=%.3f, skewness=%.3f. Plotting range %.2f to %.2f.', min(descriptor_to_plot.data), max(descriptor_to_plot.data), median(descriptor_to_plot.data), mean(descriptor_to_plot.data), skewness(descriptor_to_plot.data), plot_range(1), plot_range(2));
+descriptor_stats = sprintf('min=%.3f, max=%.3f, median=%.3f, mean=%.3f, skewness=%.3f. Plotting range %.3f to %.3f.', min(descriptor_to_plot.data), max(descriptor_to_plot.data), median(descriptor_to_plot.data), mean(descriptor_to_plot.data), skewness(descriptor_to_plot.data), plot_range(1), plot_range(2));
 disp(descriptor_stats);
 
 %% Display the data on a surface. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.

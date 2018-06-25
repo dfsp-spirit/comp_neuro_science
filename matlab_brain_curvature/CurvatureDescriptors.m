@@ -225,7 +225,7 @@ classdef CurvatureDescriptors
             aici = obj.absolute_intrinsic_curvature_index().data;
             curv = gln ./ aici;
             %suggested_plot_range = [0.0, 0.2];
-            suggested_plot_range = obj.find_plot_range(curv, 1, 1);
+            suggested_plot_range = obj.find_plot_range(curv, 30, 30);
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
