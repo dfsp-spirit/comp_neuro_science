@@ -221,10 +221,11 @@ classdef CurvatureDescriptors
         function res = sk2sk(obj)
             name = 'SK2SK';
             description = 'SK2SK = GLN / AICI = (K * K ) / ABS(K), where K is the Gaussian curvature';
-            suggested_plot_range = [0.0, 0.2];
             gln = obj.gaussian_l2_norm().data;
             aici = obj.absolute_intrinsic_curvature_index().data;
             curv = gln ./ aici;
+            %suggested_plot_range = [0.0, 0.2];
+            suggested_plot_range = obj.find_plot_range(curv, 1, 1);
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
@@ -271,6 +272,22 @@ classdef CurvatureDescriptors
                 fprintf('WARNING: CurvatureDescriptors.shape_type: Received %d shape index values that were out of range.', num_out_of_range);
             end
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
+        end
+
+        % Determines the range of values to plot, based on removing the specified percentiles cut_low and cut_high from the (lower and upper) part of the data.
+        function range = find_plot_range(~, data, cut_low, cut_high)
+            lower_bound = 0 + cut_low;
+            upper_bound = 100 - cut_high;
+            %fprintf("fpr: lower_bound=%d, upper_bound=%d. \n", lower_bound, upper_bound);
+            removed_threshold_small = prctile(data, lower_bound);
+            removed_threshold_large = prctile(data, upper_bound);
+            %fprintf("fpr: removed_threshold_small=%d, removed_threshold_large=%d. \n", removed_threshold_small, removed_threshold_large);
+            mfilter = removed_threshold_small > data | removed_threshold_large < data;
+            data_filtered = data;
+            data_filtered(mfilter) = NaN;
+            lowest_value_to_plot = nanmin(data_filtered);
+            highest_value_to_plot = nanmax(data_filtered);
+            range = [lowest_value_to_plot, highest_value_to_plot];
         end
 
 

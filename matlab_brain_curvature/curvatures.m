@@ -78,7 +78,7 @@ sh2sh = curv_calculator.sh2sh();
 sk2sk = curv_calculator.sk2sk();
 
 %...but we only use/plot one of them. Make your choice:
-descriptor_to_plot = shape_index;
+descriptor_to_plot = sk2sk;
 
 plot_title = descriptor_to_plot.name;
 plot_range = descriptor_to_plot.suggested_plot_range;
