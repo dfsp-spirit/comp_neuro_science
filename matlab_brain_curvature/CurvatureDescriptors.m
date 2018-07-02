@@ -1,4 +1,29 @@
 classdef CurvatureDescriptors
+    % CURVATUREDESCRIPTORS Compute curvature descriptors for points on a 3D surface
+    % based on their two principal curvature values.
+    %
+    % Usage: 
+    %
+    %    1) Call the constructor with k1 and k2 values for your points to create an instance of the class:
+    %
+    %     curv_calculator = CurvatureDescriptors(k1, k2);
+    %
+    %    2) Call functions on the instance:
+    %
+    %     mean_curvature_index = curv_calculator.mean_curvature_index();
+    %
+    %    3) Use the return value. It is a struct with the following fields:
+    %       data: the descriptor values for all the points
+    %       name: string, short name of the descriptor
+    %       description: string, longer description and definition of the descriptor
+    %       suggested_plot_range : a suggested range of values to plot
+    %
+    %     desc_data = mean_curvature_index.data;
+    %     fprintf('Computes mean curvature index, min value is %d.',
+    %     mean(desc_data));
+    %
+    %    That's it.
+    %
     properties
         k1     % Numerical vector of k1 values, where each k1 value represents the larger principal curvature of a point on a surface in 3D space. Def: k1 >= k2, i.e., uses signed values.
         k2     % Numerical vector of k2 values, where each k2 value represents the smaller principal curvature of the point on a surface in 3D space. Def.: k1 >= k2i.e., uses signed values.
@@ -44,8 +69,11 @@ classdef CurvatureDescriptors
     end
 
     methods
-        % Constructor, supports initing k1 and k2.
         function obj = CurvatureDescriptors(k1, k2)
+        % Constructor, supports initing k1 and k2. It does not matter
+        % whether you supply them according the the definition k1 >= k2 or
+        % abs(k1) >= abs(k2), the class handles this correctly in any case.
+        % Note that k1 and k2 must be numeric arrays of equal length.
             if nargin ~= 2
                 error('Must supply k1 and k2. They must be numeric arrays of equal length.');
             end
@@ -62,9 +90,6 @@ classdef CurvatureDescriptors
                 error('k1 and k2 must have same length.');
             end
 
-            obj.k1 = k1;
-            obj.k2 = k2;
-
             k_values = CurvatureDescriptors.get_k1_k2_kmajor_kminor(k1, k2);
             obj.k1 = k_values.k1;
             obj.k2 = k_values.k2;
@@ -72,10 +97,9 @@ classdef CurvatureDescriptors
             obj.k_minor = k_values.k_minor;
         end
 
-
-
-        % Returns the principal curvature k1.
+        
         function res = principal_curvature_k1(obj)
+            % Returns the principal curvature k1, i.e., the larger principal curvature: k1 | k1 >= k2.
             name = 'Principal curvature k1';
             description = 'the larger principal curvature: k1 | k1 >= k2';
             suggested_plot_range = [-1.1, 0.8];
@@ -83,17 +107,19 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Returns the principal curvature k2.
+       
         function res = principal_curvature_k2(obj)
+             % Returns the principal curvature k2, i.e., the smaller principal curvature: k2 | k1 >= k2
             name = 'Principal curvature k2';
             description = 'the smaller principal curvature: k2 | k1 >= k2';
             suggested_plot_range = [-0.4, 0.3];
             curv = obj.k2;
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
-
-        % Returns the principal curvature k_major.
+      
+        
         function res = principal_curvature_k_major(obj)
+            % Returns the principal curvature k_major, i.e., the larger absolute principal curvature: k_major | abs(k_major) >= abs(k_minor)
             name = 'Principal curvature k_major';
             description = 'the larger absolute principal curvature: k_major | abs(k_major) >= abs(k_minor)';
             suggested_plot_range = [-1.1, 0.8];
@@ -101,8 +127,9 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Returns the principal curvature k_minor.
+        
         function res = principal_curvature_k_minor(obj)
+            % Returns the principal curvature k_minor, i.e., the smaller absolute principal curvature: k_minor | abs(k_major) >= abs(k_minor)
             name = 'Principal curvature k_minor';
             description = 'the smaller absolute principal curvature: k_minor | abs(k_major) >= abs(k_minor)';
             suggested_plot_range = [-0.4, 0.3];
@@ -110,28 +137,30 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-
-
-        % Computes the gaussian curvature.
+        
         function res = gaussian_curvature(obj)
+            % Computes the gaussian curvature: K = k_major * k_minor
             name = 'Gaussian curvature';
-            description = 'the Gaussian curvature: K = k1 * k2';
+            description = 'the Gaussian curvature: K = k_major * k_minor';
             suggested_plot_range = [-0.1, 0.3];
             curv = obj.k_major .* obj.k_minor;
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the mean curvature.
+        
         function res = mean_curvature(obj)
+            % Computes the mean curvature: (k_major + k_minor)/2
             name = 'Mean curvature';
-            description = 'the mean curvature: (k1+k2)/2';
+            description = 'the mean curvature: (k_major + k_minor)/2';
             suggested_plot_range = [-0.7, 0.5];
             curv = (obj.k_major + obj.k_minor) / 2;
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the intrinsic curvature index.
+        
         function res = intrinsic_curvature_index(obj)
+            % Computes the intrinsic curvature index: ICI = max(K, 0),
+            % where K is the Gaussian curvature.
             name = 'Intrinsic curvature index';
             description = 'the intrinsic curvature index: ICI = max(K, 0), where K is the Gaussian curvature';
             suggested_plot_range = [0.0, 0.3];
@@ -140,8 +169,9 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the intrinsic negative curvature index.
+        
         function res = negative_intrinsic_curvature_index(obj)
+            % Computes the intrinsic negative curvature index: NICI = min(K, 0), where K is the Gaussian curvature.
             name = 'Intrinsic negative curvature index';
             description = 'the intrinsic negative curvature index: NICI = min(K, 0), where K is the Gaussian curvature';
             suggested_plot_range = [-0.1, 0.0];
@@ -150,8 +180,9 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the absolute intrinsic curvature index.
+        
         function res = absolute_intrinsic_curvature_index(obj)
+            % Computes the absolute intrinsic curvature index: AICI = abs(K), where K is the Gaussian curvature
             name = 'Absolute intrinsic curvature index';
             description = 'the absolute intrinsic curvature index: AICI = abs(K), where K is the Gaussian curvature';
             suggested_plot_range = [0.0, 0.2];
@@ -160,8 +191,9 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the mean curvature index.
+        
         function res = mean_curvature_index(obj)
+            % Computes the mean curvature index: MCI = max(H, 0) where H is the mean curvature
             name = 'Mean curvature index';
             description = 'the mean curvature index: MCI = max(H, 0) where H is the mean curvature';
             suggested_plot_range = [0.0, 0.5];
@@ -170,8 +202,9 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the negative mean curvature index.
+       
         function res = negative_mean_curvature_index(obj)
+             % Computes the negative mean curvature index: NMCI =  min(H, 0) where H is the mean curvature
             name = 'Negative mean curvature index';
             description = 'the negative mean curvature index: NMCI =  min(H, 0) where H is the mean curvature';
             suggested_plot_range = [-0.7, 0.0];
@@ -180,8 +213,9 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the absolute mean curvature index.
+        
         function res = absolute_mean_curvature_index(obj)
+            % Computes the absolute mean curvature index: AMCI = abs(H), where H is the mean curvature
             name = 'Absolute mean curvature index (AMCI)';
             description = 'the absolute mean curvature index: AMCI = abs(H), where H is the mean curvature';
             suggested_plot_range = [0, 0.6];
@@ -190,8 +224,9 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the mean L2 norm.
+        
         function res = mean_l2_norm(obj)
+            % Computes the mean L2 norm: MLN = H * H, where H is the mean curvature
             name = 'Mean L2 norm (MLN)';
             description = 'the mean l2 norm: H * H, where H is the mean curvature';
             suggested_plot_range = [-0.7, 0.0];
@@ -200,38 +235,42 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the Gaussian L2 norm.
+        
         function res = gaussian_l2_norm(obj)
+            % Computes the Gaussian L2 norm: GLN = K * K, where K is the Gaussian curvature
             name = 'Gaussian L2 norm (GLN)';
-            description = 'the Gaussian l2 norm: K * K, where K is the Gaussian curvature';
+            description = 'the Gaussian l2 norm: GLN = K * K, where K is the Gaussian curvature';
             suggested_plot_range = [-0.7, 0.0];
             k = obj.gaussian_curvature().data;
             curv = k .* k;
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the folding index.
+        
         function res = folding_index(obj)
+            % Computes the folding index: FI = ABS(k_major) * (ABS(k_major) - ABS(k_minor))
             name = 'Folding index (FI)';
-            description = 'the folding index: ABS(K1) * (ABS(K1) - ABS(K2))';
+            description = 'the folding index: FI = ABS(k_major) * (ABS(k_major) - ABS(k_minor))';
             suggested_plot_range = [0.0, 0.8];
             curv = abs(obj.k_major) .* (abs(obj.k_major) - abs(obj.k_minor));
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the curvedness index.
+        
         function res = curvedness_index(obj)
+            % Computes the curvedness index: CI = SQRT((k_major * k_major + k_minor * k_minor) / 2.0)
             name = 'Curvedness index (CI)';
-            description = 'the curvedness index: SQRT((k1*k1 + k2*k2) / 2.0)';
+            description = 'the curvedness index: CI = SQRT((k_major * k_major + k_minor * k_minor) / 2.0)';
             suggested_plot_range = [0.0, 0.7];
             curv = sqrt((obj.k_major .* obj.k_major + obj.k_minor .* obj.k_minor) ./ 2.0);
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the area fraction of the mean curvature index
+        
         function res = area_fraction_of_mean_curvature_index(obj)
+            % Computes the area fraction of the mean curvature index: FMCI = if (H > 0) then 1, else 0
             name = 'Area fraction of the mean curvature index (FMCI)';
-            description = 'the area fraction of the mean curvature index: if (H > 0) then 1, else 0';
+            description = 'the area fraction of the mean curvature index: FMCI = if (H > 0) then 1, else 0';
             suggested_plot_range = [0, 1];
             h = obj.mean_curvature().data;
             condition_one = h > 0;
@@ -240,10 +279,11 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the area fraction of the negative mean curvature index
+        
         function res = area_fraction_of_negative_mean_curvature_index(obj)
+            % Computes the area fraction of the negative mean curvature index: FNMCI = if (H < 0) then 1, else 0
             name = 'Area fraction of the negative mean curvature index (FNMCI)';
-            description = 'the area fraction of the negative mean curvature index: if (H < 0) then 1, else 0';
+            description = 'the area fraction of the negative mean curvature index: FNMCI = if (H < 0) then 1, else 0';
             suggested_plot_range = [0, 1];
             h = obj.mean_curvature().data;
             condition_one = h < 0;
@@ -252,10 +292,11 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the area fraction of the intrinsic curvature index
+        
         function res = area_fraction_of_intrinsic_curvature_index(obj)
+            % Computes the area fraction of the intrinsic curvature index: FICI = if (K > 0) then 1, else 0
             name = 'Area fraction of the intrinsic curvature index (FICI)';
-            description = 'the area fraction of the intrinsic curvature index: if (K > 0) then 1, else 0';
+            description = 'the area fraction of the intrinsic curvature index: FICI = if (K > 0) then 1, else 0';
             suggested_plot_range = [0, 1];
             k = obj.gaussian_curvature().data;
             condition_one = k > 0;
@@ -264,10 +305,11 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the area fraction of the negative intrinsic curvature index
+        
         function res = area_fraction_of_negative_intrinsic_curvature_index(obj)
+            % Computes the area fraction of the negative intrinsic curvature index: FNICI = if (K < 0) then 1, else 0
             name = 'Area fraction of the negative intrinsic curvature index (FNICI)';
-            description = 'the area fraction of the negative intrinsic curvature index: if (K < 0) then 1, else 0';
+            description = 'the area fraction of the negative intrinsic curvature index: FNICI = if (K < 0) then 1, else 0';
             suggested_plot_range = [0, 1];
             k = obj.gaussian_curvature().data;
             condition_one = k < 0;
@@ -276,8 +318,9 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes SH2SH
+        
         function res = sh2sh(obj)
+            % Computes SH2SH = MLN / AMCI = (H * H) / ABS(H), where H is the mean curvature
             name = 'SH2SH';
             description = 'SH2SH = MLN / AMCI = (H * H) / ABS(H), where H is the mean curvature';
             suggested_plot_range = [0.0, 0.6];
@@ -287,8 +330,9 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes SK2SK
+        
         function res = sk2sk(obj)
+            % SK2SK Computes SK2SK = GLN / AICI = (K * K ) / ABS(K), where K is the Gaussian curvature.
             name = 'SK2SK';
             description = 'SK2SK = GLN / AICI = (K * K ) / ABS(K), where K is the Gaussian curvature';
             gln = obj.gaussian_l2_norm().data;
@@ -299,9 +343,10 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the shape index, see Surface shape and curvatures
-        % scales, Jan j Koenderink and Andrea J van Doorn, 1992
+        
         function res = shape_index(obj)
+            % Computes the shape index: SI = (2.0 / PI) * ATAN((k1 + k2) / (k2 - k1)). See Surface shape and curvatures
+            % scales, Jan j Koenderink and Andrea J van Doorn, 1992.
             name = 'Shape index (SI)';
             description = 'the shape index: SI = (2.0 / PI) * ATAN((k1 + k2) / (k2 - k1))';
             suggested_plot_range = [-1.0, 1.0];
@@ -309,9 +354,10 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Computes the shape type (based on the shape index). See Brain
-        % Struct Funct (2013) 218:1451–1462 by Hu et al.
+        
         function res = shape_type(obj)
+            % Computes the shape type (based on the shape index). See Brain
+            % Struct Funct (2013) 218:1451–1462 by Hu et al.
             name = 'Shape type';
             description = 'the shape type: 1 for -1<=SI<-0.5, 2 for -0.5<=SI<-0, 3 for 0<=SI<0.5, and 4 for 0.5<=SI<1';
             suggested_plot_range = [1, 4];
@@ -344,16 +390,15 @@ classdef CurvatureDescriptors
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
-        % Determines the range of values to plot, based on removing the specified percentiles cut_low and cut_high from the (lower and upper) part of the data.
-        % If you want to cut only from one side, just set the other cut
-        % value to zero.
+        
         function range = find_plot_range(~, data, cut_low, cut_high)
+            % Determines the range of values to plot, based on removing the specified percentiles cut_low and cut_high from the (lower and upper) part of the data.
+            % If you want to cut only from one side, just set the other cut
+            % value to zero.
             lower_bound = 0 + cut_low;
             upper_bound = 100 - cut_high;
-            %fprintf("fpr: lower_bound=%d, upper_bound=%d. \n", lower_bound, upper_bound);
             removed_threshold_small = prctile(data, lower_bound);
             removed_threshold_large = prctile(data, upper_bound);
-            %fprintf("fpr: removed_threshold_small=%d, removed_threshold_large=%d. \n", removed_threshold_small, removed_threshold_large);
             mfilter = removed_threshold_small > data | removed_threshold_large < data;
             data_filtered = data;
             data_filtered(mfilter) = NaN;
@@ -361,8 +406,6 @@ classdef CurvatureDescriptors
             highest_value_to_plot = nanmax(data_filtered);
             range = [lowest_value_to_plot, highest_value_to_plot];
         end
-
-
 
     end
 end
