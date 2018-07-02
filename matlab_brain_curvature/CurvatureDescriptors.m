@@ -126,7 +126,7 @@ classdef CurvatureDescriptors
             name = 'Mean curvature';
             description = 'the mean curvature: (k1+k2)/2';
             suggested_plot_range = [-0.7, 0.5];
-            curv = (obj.k1 + obj.k2) / 2;
+            curv = (obj.k_major + obj.k_minor) / 2;
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
@@ -215,7 +215,7 @@ classdef CurvatureDescriptors
             name = 'Folding index (FI)';
             description = 'the folding index: ABS(K1) * (ABS(K1) - ABS(K2))';
             suggested_plot_range = [0.0, 0.8];
-            curv = abs(obj.k1) .* (abs(obj.k2) - abs(obj.k2));
+            curv = abs(obj.k_major) .* (abs(obj.k_major) - abs(obj.k_minor));
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
@@ -224,7 +224,7 @@ classdef CurvatureDescriptors
             name = 'Curvedness index (CI)';
             description = 'the curvedness index: SQRT((k1*k1 + k2*k2) / 2.0)';
             suggested_plot_range = [0.0, 0.7];
-            curv = sqrt((obj.k1 .* obj.k1 + obj.k2 .* obj.k2) ./ 2.0);
+            curv = sqrt((obj.k_major .* obj.k_major + obj.k_minor .* obj.k_minor) ./ 2.0);
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
