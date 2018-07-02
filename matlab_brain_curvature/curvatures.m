@@ -17,8 +17,10 @@ measured_surface = 'white';       % The surface for which you have measured curv
 %display_on_surface = 'inflated'; % The surface on which the data should be plotted. You can use the same surface you measured, but it is often better to use 'inflated' to see the values in deep sulci.
 display_on_surface = 'white';
 
+% End of settings. But make sure you set the descriptor you want to plot
+% below, it is in the variable 'descriptor_to_plot'.
 
-%% Read input data
+%%Read input data
 % Note that you must generate the curvature files for k1 and k2 from a surface using mris_curvature in the system shell, see https://surfer.nmr.mgh.harvard.edu/fswiki/mris_curvature
 % Example: mris_curvature -min -max -a 3 rh.pial && mris_curvature -min -max -a 3 lh.pial
 
