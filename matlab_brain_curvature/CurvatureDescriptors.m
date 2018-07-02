@@ -3,26 +3,67 @@ classdef CurvatureDescriptors
         k1     % Numerical vector of k1 values, where each k1 value represents the larger principal curvature of a point on a surface in 3D space.
         k2     % Numerical vector of k2 values, where each k2 value represents the smaller principal curvature of the point on a surface in 3D space.
     end
+
+    methods(Static)
+    function res = get_k1_k2_kmajor_kminor(k1_raw, k2_raw)
+        % The k1 and k2 raw values we receive may be ordered in different
+        % ways, because different definitions exist: some sources use k1>=k2,
+        % while others use |k1|>=|k2|. This functions therefor computes both
+        % definitions from the input data, so we have both and can use whatever variant we
+        % need for a certain measure later.
+        num_k_values = length(k1_raw);
+        k1 = zeros(num_k_values, 1);
+        k2 = zeros(num_k_values, 1);
+        k_major = zeros(num_k_values, 1);
+        k_minor = zeros(num_k_values, 1);
+
+        for idx=1:num_k_values
+
+            % Compute the k1 and k2 values: these follow the definition k1 >= k2.
+            if k1_raw(idx) >= k2_raw(idx)
+                k1(idx) = k1_raw(idx);
+                k2(idx) = k2_raw(idx);
+            else
+                k1(idx) = k2_raw(idx);
+                k2(idx) = k1_raw(idx);
+            end
+
+            % Compute the k_minor and k_major values: these follow the definition |k1| >= |k2|.
+            if abs(k1_raw(idx)) >= abs(k2_raw(idx))
+                k_major(idx) = k1_raw(idx);
+                k_minor(idx) = k2_raw(idx);
+            else
+                k_major(idx) = k2_raw(idx);
+                k_minor(idx) = k1_raw(idx);
+            end
+        end
+        res = struct('k1', k1, 'k2', k2, 'k_major', k_major, 'k_minor', k_minor);
+    end
+    end
+
     methods
         % Constructor, supports initing k1 and k2. Does not check whether
         % k1 and k2 have equal length, but that must obviously be the
         % case.
         function obj = CurvatureDescriptors(k1, k2)
-            if nargin > 0
-                if isnumeric(k1)
-                    obj.k1 = k1;
-                else
-                    error('k1 value must be numeric.')
-                end
+            if nargin ~= 2
+                error('Must supply k1 and k2. They must be numeric arrays of equal length.')
             end
-            if nargin > 1
-                if isnumeric(k2)
-                    obj.k2 = k2;
-                else
-                    error('k2 value must be numeric.')
-                end
+            if isnumeric(k1)
+                obj.k1 = k1;
+            else
+                error('k1 value must be numeric.')
             end
+
+            if isnumeric(k2)
+                obj.k2 = k2;
+            else
+                error('k2 value must be numeric.')
+            end
+            str = CurvatureDescriptors.get_k1_k2_kmajor_kminor(k1, k2)
         end
+
+
 
         % Returns the principal curvature k1.
         function res = principal_curvature_k1(obj)
