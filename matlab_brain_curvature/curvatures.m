@@ -36,15 +36,14 @@ k2 = vertcat(k2_lh, k2_rh);
 % The k1 and k2 values we receive from Freesurfer/mris_curvature are
 % determined by ordering the absolute values of the principal curvatures
 % (and assigning the larger one to k1 and the smaller one to k2, see the
-% source code of mris_curvature for details), but we are interested in the
-% ordering based on the signed values. So we fix the ordering here if needed.
-for idx=1:length(k1)
-    if k1(idx) < k2(idx)
-        tmp = k1(idx);
-        k1(idx) = k2(idx);
-        k2(idx) = tmp;
-    end
-end
+% source code of mris_curvature for details). This means they use the 
+% following definition for k1, k2:
+%      abs(k1) >= abs(k2)
+% An alternate definition used in other sources is:
+%      k1 >= k2
+% We do not have to care for whatever definition was used by the software
+% that computed the k1 and k2 values here though, as the
+% CurvatureDescriptor class handles that for us.
 
 
 % The different curvature descriptors are available in the CurvatureDescriptors class. See
