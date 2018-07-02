@@ -2,7 +2,7 @@
 
 Implementation of various curvature descriptors for a point on a 3D surface, based on the two principal curvatures `k1` and `k2`. The implementation assumes you already have k1 and k2 values for each point on the surface. The implementation is in the `CurvatureDescriptors.m` file.
 
-This is a Matlab implementation that follows the definitions given in Table 1 of the following publication: `Shimony, J. S., Smyser, C. D., Wideman, G., Alexopoulos, D., Hill, J., Harwell, J., ... & Neil, J. J. (2016). Comparison of cortical folding measures for evaluation of developing human brain. Neuroimage, 125, 780-790.`
+This is a Matlab implementation that follows the definitions given in Table 1 of the following publication: `Shimony, J. S., Smyser, C. D., Wideman, G., Alexopoulos, D., Hill, J., Harwell, J., ... & Neil, J. J. (2016). Comparison of cortical folding measures for evaluation of developing human brain. Neuroimage, 125, 780-790.` For a quick online overview with some illustrations, you can also check http://brainvis.wustl.edu/wiki/index.php/Folding/Measurements.
 
 The measures themselves originate from the latter and various other publications, including `Rodriguez-Carranza et al. (2008)`, `Koenderink and van Doorn (1992)`, `Van Essen and Drury (1997)`, and `Batchelor et al. (2002)`.
 
@@ -33,6 +33,8 @@ The following descriptors are available:
 
 * principal_curvature_k1
 * principal_curvature_k2
+* principal_curvature_k_major
+* principal_curvature_k_minor
 * mean_curvature
 * gaussian_curvature
 * intrinsic_curvature_index
@@ -54,7 +56,6 @@ The following descriptors are available:
 * sh2sh
 * sk2sk
 
-The list and the definitions are from http://brainvis.wustl.edu/wiki/index.php/Folding/Measurements.
 
 ### Usage example
 
