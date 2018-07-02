@@ -77,7 +77,7 @@ classdef CurvatureDescriptors
         % Returns the principal curvature k1.
         function res = principal_curvature_k1(obj)
             name = 'Principal curvature k1';
-            description = 'the larger principal curvature: k1';
+            description = 'the larger principal curvature: k1 | k1 >= k2';
             suggested_plot_range = [-1.1, 0.8];
             curv = obj.k1;
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
@@ -86,18 +86,38 @@ classdef CurvatureDescriptors
         % Returns the principal curvature k2.
         function res = principal_curvature_k2(obj)
             name = 'Principal curvature k2';
-            description = 'the smaller principal curvature: k2';
+            description = 'the smaller principal curvature: k2 | k1 >= k2';
             suggested_plot_range = [-0.4, 0.3];
             curv = obj.k2;
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
+
+        % Returns the principal curvature k_major.
+        function res = principal_curvature_k_major(obj)
+            name = 'Principal curvature k_major';
+            description = 'the larger absolute principal curvature: k_major | abs(k_major) >= abs(k_minor)';
+            suggested_plot_range = [-1.1, 0.8];
+            curv = obj.k_major;
+            res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
+        end
+
+        % Returns the principal curvature k_minor.
+        function res = principal_curvature_k_minor(obj)
+            name = 'Principal curvature k_minor';
+            description = 'the smaller absolute principal curvature: k_minor | abs(k_major) >= abs(k_minor)';
+            suggested_plot_range = [-0.4, 0.3];
+            curv = obj.k_minor;
+            res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
+        end
+
+
 
         % Computes the gaussian curvature.
         function res = gaussian_curvature(obj)
             name = 'Gaussian curvature';
             description = 'the Gaussian curvature: K = k1 * k2';
             suggested_plot_range = [-0.1, 0.3];
-            curv = obj.k1 .* obj.k2;
+            curv = obj.k_major .* obj.k_minor;
             res = struct('data', curv, 'name', name, 'description', description, 'suggested_plot_range', suggested_plot_range);
         end
 
@@ -325,6 +345,8 @@ classdef CurvatureDescriptors
         end
 
         % Determines the range of values to plot, based on removing the specified percentiles cut_low and cut_high from the (lower and upper) part of the data.
+        % If you want to cut only from one side, just set the other cut
+        % value to zero.
         function range = find_plot_range(~, data, cut_low, cut_high)
             lower_bound = 0 + cut_low;
             upper_bound = 100 - cut_high;

@@ -58,6 +58,8 @@ curv_calculator = CurvatureDescriptors(k1, k2);
 % Compute all the descriptors:
 principal_curvature_k1 = curv_calculator.principal_curvature_k1();
 principal_curvature_k2 = curv_calculator.principal_curvature_k2();
+principal_curvature_k_major = curv_calculator.principal_curvature_k_major();
+principal_curvature_k_minor = curv_calculator.principal_curvature_k_minor();
 mean_curvature = curv_calculator.mean_curvature();
 gaussian_curvature = curv_calculator.gaussian_curvature();
 intrinsic_curvature_index = curv_calculator.intrinsic_curvature_index();
@@ -80,7 +82,7 @@ sh2sh = curv_calculator.sh2sh();
 sk2sk = curv_calculator.sk2sk();
 
 %...but we only use/plot one of them. Make your choice:
-descriptor_to_plot = sk2sk;
+descriptor_to_plot = gaussian_curvature;
 
 plot_title = descriptor_to_plot.name;
 plot_range = descriptor_to_plot.suggested_plot_range;
