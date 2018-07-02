@@ -1,66 +1,75 @@
 classdef CurvatureDescriptors
     properties
-        k1     % Numerical vector of k1 values, where each k1 value represents the larger principal curvature of a point on a surface in 3D space.
-        k2     % Numerical vector of k2 values, where each k2 value represents the smaller principal curvature of the point on a surface in 3D space.
+        k1     % Numerical vector of k1 values, where each k1 value represents the larger principal curvature of a point on a surface in 3D space. Def: k1 >= k2, i.e., uses signed values.
+        k2     % Numerical vector of k2 values, where each k2 value represents the smaller principal curvature of the point on a surface in 3D space. Def.: k1 >= k2i.e., uses signed values.
+        k_major     % Numerical vector of k_major values, where each k_major value represents the larger principal curvature of a point on a surface in 3D space. Def: k_major >= k_minori.e., uses absolute values.
+        k_minor     % Numerical vector of k_minor values, where each k_minor value represents the smaller principal curvature of the point on a surface in 3D space. Def.: |k_major| >= |k_minor|, i.e., uses absolute values.
     end
 
     methods(Static)
-    function res = get_k1_k2_kmajor_kminor(k1_raw, k2_raw)
-        % The k1 and k2 raw values we receive may be ordered in different
-        % ways, because different definitions exist: some sources use k1>=k2,
-        % while others use |k1|>=|k2|. This functions therefor computes both
-        % definitions from the input data, so we have both and can use whatever variant we
-        % need for a certain measure later.
-        num_k_values = length(k1_raw);
-        k1 = zeros(num_k_values, 1);
-        k2 = zeros(num_k_values, 1);
-        k_major = zeros(num_k_values, 1);
-        k_minor = zeros(num_k_values, 1);
+        function res = get_k1_k2_kmajor_kminor(k1_raw, k2_raw)
+            % The k1 and k2 raw values we receive may be ordered in different
+            % ways, because different definitions exist: some sources use k1>=k2,
+            % while others use |k1|>=|k2|. This functions therefor computes both
+            % definitions from the input data, so we have both and can use whatever variant we
+            % need for a certain measure later.
+            num_k_values = length(k1_raw);
+            k1 = zeros(num_k_values, 1);
+            k2 = zeros(num_k_values, 1);
+            k_major = zeros(num_k_values, 1);
+            k_minor = zeros(num_k_values, 1);
 
-        for idx=1:num_k_values
+            for idx=1:num_k_values
 
-            % Compute the k1 and k2 values: these follow the definition k1 >= k2.
-            if k1_raw(idx) >= k2_raw(idx)
-                k1(idx) = k1_raw(idx);
-                k2(idx) = k2_raw(idx);
-            else
-                k1(idx) = k2_raw(idx);
-                k2(idx) = k1_raw(idx);
+                % Compute the k1 and k2 values: these follow the definition k1 >= k2.
+                if k1_raw(idx) >= k2_raw(idx)
+                    k1(idx) = k1_raw(idx);
+                    k2(idx) = k2_raw(idx);
+                else
+                    k1(idx) = k2_raw(idx);
+                    k2(idx) = k1_raw(idx);
+                end
+
+                % Compute the k_minor and k_major values: these follow the definition |k1| >= |k2|.
+                if abs(k1_raw(idx)) >= abs(k2_raw(idx))
+                    k_major(idx) = k1_raw(idx);
+                    k_minor(idx) = k2_raw(idx);
+                else
+                    k_major(idx) = k2_raw(idx);
+                    k_minor(idx) = k1_raw(idx);
+                end
             end
-
-            % Compute the k_minor and k_major values: these follow the definition |k1| >= |k2|.
-            if abs(k1_raw(idx)) >= abs(k2_raw(idx))
-                k_major(idx) = k1_raw(idx);
-                k_minor(idx) = k2_raw(idx);
-            else
-                k_major(idx) = k2_raw(idx);
-                k_minor(idx) = k1_raw(idx);
-            end
+            res = struct('k1', k1, 'k2', k2, 'k_major', k_major, 'k_minor', k_minor);
         end
-        res = struct('k1', k1, 'k2', k2, 'k_major', k_major, 'k_minor', k_minor);
-    end
     end
 
     methods
-        % Constructor, supports initing k1 and k2. Does not check whether
-        % k1 and k2 have equal length, but that must obviously be the
-        % case.
+        % Constructor, supports initing k1 and k2.
         function obj = CurvatureDescriptors(k1, k2)
             if nargin ~= 2
-                error('Must supply k1 and k2. They must be numeric arrays of equal length.')
-            end
-            if isnumeric(k1)
-                obj.k1 = k1;
-            else
-                error('k1 value must be numeric.')
+                error('Must supply k1 and k2. They must be numeric arrays of equal length.');
             end
 
-            if isnumeric(k2)
-                obj.k2 = k2;
-            else
-                error('k2 value must be numeric.')
+            if ~ isnumeric(k1)
+                error('k1 value must be numeric.');
             end
-            str = CurvatureDescriptors.get_k1_k2_kmajor_kminor(k1, k2)
+
+            if ~ isnumeric(k2)
+                error('k2 value must be numeric.');
+            end
+
+            if length(k1) ~= length(k2)
+                error('k1 and k2 must have same length.');
+            end
+
+            obj.k1 = k1;
+            obj.k2 = k2;
+
+            k_values = CurvatureDescriptors.get_k1_k2_kmajor_kminor(k1, k2);
+            obj.k1 = k_values.k1;
+            obj.k2 = k_values.k2;
+            obj.k_major = k_values.k_major;
+            obj.k_minor = k_values.k_minor;
         end
 
 

@@ -51,6 +51,7 @@ end
 % http://brainvis.wustl.edu/wiki/index.php/Folding/Measurements for a full
 % list. Feel free to come up with and implement some more.
 
+
 curv_calculator = CurvatureDescriptors(k1, k2);
 
 % Compute all the descriptors:
