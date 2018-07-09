@@ -13,4 +13,5 @@ dependencies:
   - pyqt
   - qt=4
   - ipython
+  - pygobject
 
