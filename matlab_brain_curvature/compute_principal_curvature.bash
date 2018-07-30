@@ -1,8 +1,10 @@
 #!/bin/bash
 ## compute_principal_curvature.bash -- use the mris_curvature tool from FreeSurfer to compute the principal curvatures k1 and k2 for all vertices of the brains of all subjects in the subjects file.
+## This script writes the curvature data into files in the $SUBJECTS_DIR/<subject_id>/surf/ directory, so you need write access to the $SUBJECTS_DIR to run it.
 ## Written by Tim Schäfer, 2018-07-30
 
 APPTAG='[CPC]'
+echo "$APPTAG Compute Principal Curvature -- run the mris_curvature tool to compute k1 and k2 for all subjects in a subjects file."
 
 if [ -z "$1" -o -z "$2" ]; then
     echo "$APPTAG USAGE: Change into your SUBJECTS_DIR and make sure you have a subjects file somewhere. Then run this script as follows:"
@@ -17,7 +19,7 @@ SURFACE="$2"
 
 BASEDIR=$(pwd)
 
-if [ ! -f "$SUBJECTSFILE"]; then
+if [ ! -f "$SUBJECTSFILE" ]; then
     echo "$APPTAG ERROR: Subjects file '$SUBJECTSFILE' does not exist or cannot be read."
     exit 1
 fi
