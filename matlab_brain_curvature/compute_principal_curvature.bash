@@ -51,3 +51,4 @@ done
 
 echo "$APPTAG All done. Found $NUM_SUBJECTS listed in subjects file $SUBJECTSFILE. Surface computation succeeded for $NUM_OK and failed for $NUM_FAIL. Please check the output above for errors."
 echo "$APPTAG All subjects for which it worked out should have the results in the four files: <subject>/surf/lh.<surface>.max and <subject>/surf/lh.<surface>.min, <subject>/surf/rh.<surface>.max, and <subject>/surf/rh.<surface>.min."
+exit 0
