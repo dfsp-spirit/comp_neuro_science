@@ -24,6 +24,7 @@ fi
 
 ALL_SUBJECT_IDS=$(cat $SUBJECTSFILE | tr '\n' ' ')
 
+FAILED_LIST=""
 NUM_SUBJECTS=0
 NUM_OK=0
 NUM_FAIL=0
@@ -37,6 +38,7 @@ for SUBJECT in $ALL_SUBJECT_IDS; do
         retVal=$?
         if [ $retVal -ne 0 ]; then
             NUM_FAIL=$((NUM_FAIL + 1))
+            FAILED_LIST="${FAILED_LIST}:${SUBJECT}"
             echo "$APPTAG Error: mris_curvature command failed for subject '$SUBJECT'."
         else
             NUM_OK=$((NUM_OK + 1))
@@ -45,10 +47,15 @@ for SUBJECT in $ALL_SUBJECT_IDS; do
         cd "$BASEDIR"
     else
         NUM_FAIL=$((NUM_FAIL + 1))
+        FAILED_LIST="${FAILED_LIST}:${SUBJECT}"
         echo "$APPTAG WARNING: Cannot handle subject $SUBJECT, could not find data directory '$SUBJECT_SURF_DIR'."
     fi
 done
 
 echo "$APPTAG All done. Found $NUM_SUBJECTS listed in subjects file $SUBJECTSFILE. Surface computation succeeded for $NUM_OK and failed for $NUM_FAIL. Please check the output above for errors."
 echo "$APPTAG All subjects for which it worked out should have the results in the four files: <subject>/surf/lh.<surface>.max and <subject>/surf/lh.<surface>.min, <subject>/surf/rh.<surface>.max, and <subject>/surf/rh.<surface>.min."
+if [ $NUM_FAIL -gt 0 ]; then
+    FAILED_LIST="${FAILED_LIST:1}"    # remove the colon before the first element.
+    echo "$APPTAG The $NUM_FAIL failed subject ids, separated by colons follow. ${FAILED_LIST}"
+fi
 exit 0
