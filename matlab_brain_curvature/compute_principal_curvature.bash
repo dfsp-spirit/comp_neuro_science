@@ -82,9 +82,15 @@ for SUBJECT in $ALL_SUBJECT_IDS; do
             # Rename principal curvature output files if a suffix was given
             if [ -n "$SUFFIX" ]; then
                 EXPECTED_OUTPUT_FILES="lh.${SURFACE}.max lh.${SURFACE}.min rh.${SURFACE}.max rh.${SURFACE}.min"
-                for OUTFILE in "$EXPECTED_OUTPUT_FILES"
+                for OUTFILE in $EXPECTED_OUTPUT_FILES
                 do
-                    mv "$OUTFILE" "${OUTFILE}${SUFFIX}" || { NUM_OUTPUT_MOVE_FAIL=$((NUM_OUTPUT_MOVE_FAIL + 1)); OUTPUT_FILES_MOVE_FAILED_LIST="${OUTPUT_FILES_MOVE_FAILED_LIST}:${SUBJECT}/surf/${OUTFILE}" }
+                    #echo "$APPTAG   Moving output file ${OUTFILE} for subject ${SUBJECT} to ${OUTFILE}${SUFFIX}."
+                    mv "$OUTFILE" "${OUTFILE}${SUFFIX}"
+                    retVal=$?
+                    if [ $retVal -ne 0 ]; then
+                        NUM_OUTPUT_MOVE_FAIL=$((NUM_OUTPUT_MOVE_FAIL + 1))
+                        OUTPUT_FILES_MOVE_FAILED_LIST="${OUTPUT_FILES_MOVE_FAILED_LIST}:${SUBJECT}/surf/${OUTFILE}"
+                   fi
                 done
             fi
         fi
