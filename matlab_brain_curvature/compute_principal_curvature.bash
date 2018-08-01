@@ -57,6 +57,7 @@ if [ ! -f "$SUBJECTSFILE" ]; then
 fi
 
 ALL_SUBJECT_IDS=$(cat $SUBJECTSFILE | tr '\n' ' ')
+SUBJECT_COUNT=$(cat $ALL_SUBJECT_IDS | wc -w)
 
 FAILED_LIST=""
 NUM_SUBJECTS=0
@@ -67,6 +68,7 @@ OUTPUT_FILES_MOVE_FAILED_LIST=""
 
 for SUBJECT in $ALL_SUBJECT_IDS; do
     NUM_SUBJECTS=$((NUM_SUBJECTS + 1))
+    echo "$APPTAG Handling subject ${SUBJECT}, which is # ${NUM_SUBJECTS} of ${SUBJECT_COUNT}."
     SUBJECT_SURF_DIR="${SUBJECT}/surf"
     if [ -d "$SUBJECT_SURF_DIR" ]; then
         cd "$SUBJECT_SURF_DIR" && $MRIS_CURVATURE_BINARY $MRIS_CURVATURE_REQUIRED_OPTIONS $MRIS_CURVATURE_OPTIONS rh.${SURFACE} && $MRIS_CURVATURE_BINARY $MRIS_CURVATURE_REQUIRED_OPTIONS $MRIS_CURVATURE_OPTIONS lh.${SURFACE}
@@ -75,10 +77,10 @@ for SUBJECT in $ALL_SUBJECT_IDS; do
         if [ $retVal -ne 0 ]; then
             NUM_FAIL=$((NUM_FAIL + 1))
             FAILED_LIST="${FAILED_LIST}:${SUBJECT}"
-            echo "$APPTAG Error: mris_curvature command failed for subject '$SUBJECT'."
+            echo "$APPTAG ERROR: mris_curvature command failed for subject '$SUBJECT'."
         else
             NUM_OK=$((NUM_OK + 1))
-            echo "$APPTAG Handled surface $SURFACE for subject '$SUBJECT': OK."
+            #echo "$APPTAG Handled surface $SURFACE for subject '$SUBJECT': OK."
 
             # Rename principal curvature output files if a suffix was given
             if [ -n "$SUFFIX" ]; then
@@ -95,15 +97,15 @@ for SUBJECT in $ALL_SUBJECT_IDS; do
                 done
             fi
         fi
-        cd "$BASEDIR"
     else
         NUM_FAIL=$((NUM_FAIL + 1))
         FAILED_LIST="${FAILED_LIST}:${SUBJECT}"
         echo "$APPTAG WARNING: Cannot handle subject $SUBJECT, could not find data directory '$SUBJECT_SURF_DIR'."
     fi
+    cd "$BASEDIR"
 done
 
-echo "$APPTAG All done. Found $NUM_SUBJECTS listed in subjects file $SUBJECTSFILE. Surface computation succeeded for $NUM_OK and failed for $NUM_FAIL. Please check the output above for errors."
+echo "$APPTAG All done. Found $NUM_SUBJECTS subjects listed in subjects file '$SUBJECTSFILE'. Surface computation succeeded for $NUM_OK and failed for $NUM_FAIL of them. Please check the output above for errors."
 echo "$APPTAG All subjects for which it worked out should have the results in the four files: <subject>/surf/lh.${SURFACE}.max${SUFFIX} and <subject>/surf/lh.${SURFACE}.min${SUFFIX}, <subject>/surf/rh.${SURFACE}.max${SUFFIX}, and <subject>/surf/rh.${SURFACE}.min${SUFFIX}."
 if [ $NUM_FAIL -gt 0 ]; then
     FAILED_LIST="${FAILED_LIST:1}"    # remove the colon before the first element.
@@ -113,4 +115,14 @@ if [ $NUM_OUTPUT_MOVE_FAIL -gt 0 ]; then
     OUTPUT_FILES_MOVE_FAILED_LIST="${OUTPUT_FILES_MOVE_FAILED_LIST:1}"    # remove the colon before the first element.
     echo "$APPTAG [WARNING] The $NUM_OUTPUT_MOVE_FAIL expected output files that could not be renamed with suffix '${SUFFIX}', separated by colons, follow. ${OUTPUT_FILES_MOVE_FAILED_LIST}"
 fi
+
+# log the mris_curvature settings that were used during this run to a file.
+FINISHED_AT=$(date +%Y-%m-%d_%H-%M-%S)
+OPTIONS_USED="surface='${SURFACE}', suffix='${SUFFIX}', mris_curvature options='${MRIS_CURVATURE_REQUIRED_OPTIONS} ${MRIS_CURVATURE_OPTIONS}', finshed_date_time=${FINISHED_AT}"
+OPTIONS_LOGILE_LABEL="$FINISHED_AT"
+if [ -n "$SUFFIX" ]; then
+    OPTIONS_LOGILE_LABEL="$SUFFIX"
+fi
+OPTIONS_LOGILE="cpc_options.run${OPTIONS_LOGILE_LABEL}"
+echo "${OPTIONS_USED}" > "${OPTIONS_LOGILE}" && echo "$APPTAG Saved information on the settings used in this run in file '${OPTIONS_LOGILE}'."
 exit 0
