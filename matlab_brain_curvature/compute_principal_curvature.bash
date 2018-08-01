@@ -66,7 +66,7 @@ if [ ! -f "$SUBJECTSFILE" ]; then
 fi
 
 ALL_SUBJECT_IDS=$(cat $SUBJECTSFILE | tr '\n' ' ')
-SUBJECT_COUNT=$(cat $ALL_SUBJECT_IDS | wc -w)
+SUBJECT_COUNT=$(echo "$ALL_SUBJECT_IDS" | wc -w)
 
 FAILED_LIST=""
 NUM_SUBJECTS=0
