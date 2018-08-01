@@ -3,7 +3,7 @@
 ## This script writes the curvature data into files in the $SUBJECTS_DIR/<subject_id>/surf/ directory, so you need write access to the $SUBJECTS_DIR to run it.
 ## Written by Tim Schäfer, 2018-07-30
 
-## Settings ##
+##### Settings -- you can adapt these to your needs. #####
 
 # path to the mris_curvature binary. It is fine like this if mris_curvature is on your PATH.
 MRIS_CURVATURE_BINARY=$(which mris_curvature)
@@ -12,7 +12,7 @@ MRIS_CURVATURE_BINARY=$(which mris_curvature)
 MRIS_CURVATURE_OPTIONS="-a 10"
 
 
-## Start of script, do not change stuff below this line. ##
+##### Start of script, there should be no need to change stuff below this line. #####
 
 MRIS_CURVATURE_REQUIRED_OPTIONS="-min -max"
 
@@ -24,7 +24,8 @@ if [ -z "$1" -o -z "$2" ]; then
     echo "$APPTAG       $0 <subjectsfile> <surface> [<suffix>]"
     echo "$APPTAG <subjectsfile>: the subjects file, must contain one subject identifier per line (each identifier must be a sub directory of SUBJECTS_DIR, like this: SUBJECTS_DIR/<subject>/)."
     echo "$APPTAG <surface>: the surface to use, e.g., 'pial'. The data for the surface must exist in SUBJECTS_DIR/<subject>/surf/."
-    echo "$APPTAG <suffix>: optional. If given, the principal curvature output files are renamed by appending <suffix> to the file names. Hint: use a suffix describing the mris_curvature options."
+    echo "$APPTAG <suffix>: optional. If given, the principal curvature output files are renamed by appending <suffix> to the file names. Hint: use a suffix describing the mris_curvature options. Example: '.a10'"
+    echo "$APPTAG Note that you can adapt the options passed to mris_curvature (e.g., smoothing) by editing the 'Settings' section at the top of this script."
     exit 1
 fi
 
