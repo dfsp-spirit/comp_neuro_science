@@ -9,7 +9,8 @@
 
 ## You will need to adapt the next two lines to your system:
 
-CPC_SCRIPT="$HOME/develop/comp_neuro_science/matlab_brain_curvature/compute_principal_curvature.bash"
+#CPC_SCRIPT="$HOME/develop/comp_neuro_science/matlab_brain_curvature/compute_principal_curvature.bash"
+CPC_SCRIPT="$HOME/scripts/compute_principal_curvature.bash"
 SUBJECTS_FILE="subjects_analysis.txt"
 
 
