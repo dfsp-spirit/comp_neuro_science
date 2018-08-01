@@ -9,6 +9,7 @@
 MRIS_CURVATURE_BINARY=$(which mris_curvature)
 
 # The command line options passed to mris_curvature. (The input surface file and the options to compute the principal curvatures get added automatically, so do not add it here.)
+# Note that there is no need to edit this in this script, you can also use the <mc_opt> command line argument to change this.
 MRIS_CURVATURE_OPTIONS="-a 10"
 
 
@@ -24,8 +25,11 @@ if [ -z "$1" -o -z "$2" ]; then
     echo "$APPTAG       $0 <subjectsfile> <surface> [<suffix>]"
     echo "$APPTAG <subjectsfile>: the subjects file, must contain one subject identifier per line (each identifier must be a sub directory of SUBJECTS_DIR, like this: SUBJECTS_DIR/<subject>/)."
     echo "$APPTAG <surface>: the surface to use, e.g., 'pial'. The data for the surface must exist in SUBJECTS_DIR/<subject>/surf/."
-    echo "$APPTAG <suffix>: optional. If given, the principal curvature output files are renamed by appending <suffix> to the file names. Hint: use a suffix describing the mris_curvature options. Example: '.a10'"
-    echo "$APPTAG Note that you can adapt the options passed to mris_curvature (e.g., smoothing) by editing the 'Settings' section at the top of this script."
+    echo "$APPTAG <suffix>: optional unless you use <mc_opt>. If given, the principal curvature output files are renamed by appending <suffix> to the file names. Hint: use a suffix describing the mris_curvature options. Example: '.a15'"
+    echo "$APPTAG <mc_opt>: optional. Custom options to pass to mris_curvature. Must NOT include -min, -max, and the output file. You MUST quote this, e.g. '-a 15'. If omitted, defaults to '-a 10'."
+    echo "$APPTAG Some example calls:"
+    echo "$APPTAG  1) run for file subjects.txt, use pial surface, default averaging: '$0 subjects.txt pial'"
+    echo "$APPTAG  2) run for file subs.txt, use white surface, average 15 times using custom options, label output files with suffix .a15: '$0 subs.txt white .a15 \"-a 15\"'"
     exit 1
 fi
 
@@ -42,6 +46,11 @@ fi
 SUBJECTSFILE="$1"
 SURFACE="$2"
 SUFFIX="$3"
+MRIS_CURV_CUSTOM_OPTIONS="$4"
+if [ ! -z "$MRIS_CURV_CUSTOM_OPTIONS" ]; then
+    MRIS_CURVATURE_OPTIONS="$MRIS_CURV_CUSTOM_OPTIONS"
+fi
+
 
 echo "$APPTAG Using subjects from file '$SUBJECTSFILE' and computing curvatures for '$SURFACE' surface."
 echo "$APPTAG Running mris_curvature from '$MRIS_CURVATURE_BINARY' with options '$MRIS_CURVATURE_OPTIONS'."
