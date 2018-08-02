@@ -66,6 +66,10 @@ classdef CurvatureDescriptors
             end
             res = struct('k1', k1, 'k2', k2, 'k_major', k_major, 'k_minor', k_minor);
         end
+
+        function dsn = get_all_descriptor_short_names()
+            dsn = {'principal_curvature_k1', 'principal_curvature_k2', 'principal_curvature_k_major', 'principal_curvature_k_minor', 'mean_curvature', 'gaussian_curvature', 'intrinsic_curvature_index', 'negative_intrinsic_curvature_index', 'gaussian_l2_norm', 'absolute_intrinsic_curvature_index', 'mean_curvature_index','negative_mean_curvature_index','mean_l2_norm','absolute_mean_curvature_index','folding_index', 'curvedness_index','shape_index','shape_type','area_fraction_of_intrinsic_curvature_index','area_fraction_of_negative_intrinsic_curvature_index', 'area_fraction_of_mean_curvature_index','area_fraction_of_negative_mean_curvature_index','sh2sh','sk2sk'};
+        end
     end
 
     methods
@@ -431,13 +435,17 @@ classdef CurvatureDescriptors
             range = [lowest_value_to_plot, highest_value_to_plot];
         end
 
-        function res = compute_all(obj)
+        function res = compute_all_as_map(obj)
             % Convenience function that computes all folding measures and
             % returns them as a map. The keys are the short_name properties
             % of the individual functions, the values are the respective
-            % result structs returned by the functions.
+            % result structs returned by the functions (including the data,
+            % the name, etc).
+            % This may a sec or two, be sure to use it only if you really
+            % need the values for all these descriptors.
+            % So the map has as many keys and values as there are
+            % descriptors implemented in this class.
             res = containers.Map;
-            res('absolute_mean_curvature_index') = obj.absolute_mean_curvature_index();
             res('principal_curvature_k1') = obj.principal_curvature_k1();
             res('principal_curvature_k2') = obj.principal_curvature_k2();
             res('principal_curvature_k_major') = obj.principal_curvature_k_major();
@@ -460,8 +468,47 @@ classdef CurvatureDescriptors
             res('area_fraction_of_negative_intrinsic_curvature_index') = obj.area_fraction_of_negative_intrinsic_curvature_index();
             res('area_fraction_of_mean_curvature_index') = obj.area_fraction_of_mean_curvature_index();
             res('area_fraction_of_negative_mean_curvature_index') = obj.area_fraction_of_negative_mean_curvature_index();
-            res('sh2sh') = curv_calculator.sh2sh();
-            res('sk2sk') = curv_calculator.sk2sk();
+            res('sh2sh') = obj.sh2sh();
+            res('sk2sk') = obj.sk2sk();
+        end
+
+
+
+        function [descriptor_data, descriptor_names] = compute_all_data(obj)
+            % Convenience function that computes all folding measures and
+            % returns the data in one array, and the respective descriptor names in a second array.
+            % The names equals the short_name properties
+            % of the individual functions. Note that the data array does NOT contain the whole result struct,
+            % but only the data part.
+            % So both arrays have equal length: the number of descriptors
+            % implemented in this class.
+
+            all = obj.compute_all_as_map();
+            
+
+            descriptor_short_names = CurvatureDescriptors.get_all_descriptor_short_names();
+            num_descriptors = length(descriptor_short_names);
+
+            descriptor_names = strings(num_descriptors, 1);
+
+            if ~(num_descriptors == length(keys(all)))
+                fprintf("CurvatureDescriptors ERROR: descriptor count mismatch between internal 'get_all_descriptor_short_names' (%d) and 'compute_all_as_map' (%d) functions. This is a bug.\n", num_descriptors, length(keys(all)));
+            end
+            
+            %fprintf("Handling %d descriptors...\n", num_descriptors);
+
+            for idx = 1:num_descriptors
+                descriptor_short_name = string(descriptor_short_names(idx));
+                %fprintf("Handling descriptor short_name '%s'.\n", descriptor_short_name);
+                descriptor_names(idx) = descriptor_short_name;
+                desc_data = all(char(descriptor_short_name));
+                descriptor_data(idx,:) = desc_data.data';
+            end
+            
+            if ~(size(descriptor_data, 1) == size(descriptor_names, 1))
+                fprintf("CurvatureDescriptors ERROR: Mismatch between descriptor data (%d) and descriptor name (%d) array lengths. This is a bug.\n", size(descriptor_data, 1), size(descriptor_names, 1));
+            end
+
         end
 
     end
