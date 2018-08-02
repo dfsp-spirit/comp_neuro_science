@@ -431,5 +431,38 @@ classdef CurvatureDescriptors
             range = [lowest_value_to_plot, highest_value_to_plot];
         end
 
+        function res = compute_all(obj)
+            % Convenience function that computes all folding measures and
+            % returns them as a map. The keys are the short_name properties
+            % of the individual functions, the values are the respective
+            % result structs returned by the functions.
+            res = containers.Map;
+            res('absolute_mean_curvature_index') = obj.absolute_mean_curvature_index();
+            res('principal_curvature_k1') = obj.principal_curvature_k1();
+            res('principal_curvature_k2') = obj.principal_curvature_k2();
+            res('principal_curvature_k_major') = obj.principal_curvature_k_major();
+            res('principal_curvature_k_minor') = obj.principal_curvature_k_minor();
+            res('mean_curvature') = obj.mean_curvature();
+            res('gaussian_curvature') = obj.gaussian_curvature();
+            res('intrinsic_curvature_index') = obj.intrinsic_curvature_index();
+            res('negative_intrinsic_curvature_index') = obj.negative_intrinsic_curvature_index();
+            res('gaussian_l2_norm') = obj.gaussian_l2_norm();
+            res('absolute_intrinsic_curvature_index') = obj.absolute_intrinsic_curvature_index();
+            res('mean_curvature_index') = obj.mean_curvature_index();
+            res('negative_mean_curvature_index') = obj.negative_mean_curvature_index();
+            res('mean_l2_norm') = obj.mean_l2_norm();
+            res('absolute_mean_curvature_index') = obj.absolute_mean_curvature_index();
+            res('folding_index') = obj.folding_index();
+            res('curvedness_index') = obj.curvedness_index();
+            res('shape_index') = obj.shape_index();
+            res('shape_type') = obj.shape_type();
+            res('area_fraction_of_intrinsic_curvature_index') = obj.area_fraction_of_intrinsic_curvature_index();
+            res('area_fraction_of_negative_intrinsic_curvature_index') = obj.area_fraction_of_negative_intrinsic_curvature_index();
+            res('area_fraction_of_mean_curvature_index') = obj.area_fraction_of_mean_curvature_index();
+            res('area_fraction_of_negative_mean_curvature_index') = obj.area_fraction_of_negative_mean_curvature_index();
+            res('sh2sh') = curv_calculator.sh2sh();
+            res('sk2sk') = curv_calculator.sk2sk();
+        end
+
     end
 end
