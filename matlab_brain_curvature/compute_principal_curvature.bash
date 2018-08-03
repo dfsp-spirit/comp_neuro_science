@@ -22,7 +22,7 @@ echo "$APPTAG Compute Principal Curvature -- run the mris_curvature tool to comp
 
 if [ -z "$1" -o -z "$2" ]; then
     echo "$APPTAG USAGE: Change into your SUBJECTS_DIR and make sure you have a subjects file somewhere. Then run this script as follows:"
-    echo "$APPTAG       $0 <subjectsfile> <surface> [<suffix>]"
+    echo "$APPTAG       $0 <subjectsfile> <surface> [<suffix>] [<mc_opt>]"
     echo "$APPTAG <subjectsfile>: the subjects file, must contain one subject identifier per line (each identifier must be a sub directory of SUBJECTS_DIR, like this: SUBJECTS_DIR/<subject>/)."
     echo "$APPTAG <surface>: the surface to use, e.g., 'pial'. The data for the surface must exist in SUBJECTS_DIR/<subject>/surf/."
     echo "$APPTAG <suffix>: optional unless you use <mc_opt>. If given, the principal curvature output files are renamed by appending <suffix> to the file names. Hint: use a suffix describing the mris_curvature options. Example: '.a15'"

@@ -5,18 +5,22 @@
 # 3) Change into your SUBJECTS_DIR that contains the data and the subjects file (subject_analysis.txt, or change setting SUBJECTS_FILE below) and run this script from there, without any options. For example, if you copied the 2 scripts into ~/scripts/ and your subjects dir is ~/data/my_study, do:
 #      cd ~/data/my_study
 #      ~/scripts/run_cpc_for_all_surfaces_and_settings.bash
-# That's it. This should take some time if you have many subjects.
+# That's it. This should take some time if you have many subjects. Optionally, you can supply a subjects file as first command line argument.
 
 ## You will need to adapt the next two lines to your system:
 
-#CPC_SCRIPT="$HOME/develop/comp_neuro_science/matlab_brain_curvature/compute_principal_curvature.bash"
-CPC_SCRIPT="$HOME/scripts/compute_principal_curvature.bash"
+CPC_SCRIPT="$HOME/develop/comp_neuro_science/matlab_brain_curvature/compute_principal_curvature.bash"
+#CPC_SCRIPT="$HOME/scripts/compute_principal_curvature.bash"
 SUBJECTS_FILE="subjects_analysis.txt"
 
 
 ##### OK, no need to change stuff below this line, I guess.
 
 APPTAG="[RCPC]"
+
+if [ ! -z "$1" ]; then
+    SUBJECTS_FILE="$1"
+fi
 
 # check whether the user got this right
 if [ ! -f "$SUBJECTS_FILE" ]; then
@@ -29,17 +33,29 @@ if [ ! -x "$CPC_SCRIPT" ]; then
     exit 1
 fi
 
+echo "$APPTAG ===[ Wrapper to run the curvature computation script with different settings ]==="
 
 
 # run the script for all settings
 SURFACES="pial white"
-AVERAGINGS="0 5 10 15 20"
+AVERAGINGS="1 2 3 4"
+
+NUM_SURF=$(echo "$SURFACES" | wc -w)
+NUM_AVG=$(echo "$AVERAGINGS" | wc -w)
+
+echo "$APPTAG Running for $NUM_SURF surfaces: $SURFACES"
+echo "$APPTAG Running for $NUM_AVG averagings: $AVERAGINGS"
+
+CURRENT_SURF=0
 
 for SURFACE in $SURFACES; do
+    CURRENT_SURF=$((CURRENT_SURF + 1))
+    CURRENT_AVG=0
     for AVG in $AVERAGINGS; do
+        CURRENT_AVG=$((CURRENT_AVG + 1))
         LABEL=".a${AVG}"
         LOGFILE="run_cpc_${SURFACE}_${AVG}.log"
-        echo "$APPTAG Running cpc script for surface $SURFACE with averaging set to $AVG..."
+        echo "$APPTAG Running cpc script for surface $SURFACE (S# $CURRENT_SURF of ${NUM_SURF}) with averaging set to $AVG (A# $CURRENT_AVG of ${NUM_AVG})."
         $CPC_SCRIPT $SUBJECTS_FILE $SURFACE $LABEL "-a ${AVG}" | tee $LOGFILE
     done
 done
