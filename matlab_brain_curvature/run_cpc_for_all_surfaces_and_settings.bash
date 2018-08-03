@@ -9,8 +9,8 @@
 
 ## You will need to adapt the next two lines to your system:
 
-CPC_SCRIPT="$HOME/develop/comp_neuro_science/matlab_brain_curvature/compute_principal_curvature.bash"
-#CPC_SCRIPT="$HOME/scripts/compute_principal_curvature.bash"
+#CPC_SCRIPT="$HOME/develop/comp_neuro_science/matlab_brain_curvature/compute_principal_curvature.bash"
+CPC_SCRIPT="$HOME/scripts/compute_principal_curvature.bash"
 SUBJECTS_FILE="subjects_analysis.txt"
 
 
@@ -38,13 +38,15 @@ echo "$APPTAG ===[ Wrapper to run the curvature computation script with differen
 
 # run the script for all settings
 SURFACES="pial white"
-AVERAGINGS="1 2 3 4"
+#AVERAGINGS="1 2 3 4"
+AVERAGINGS="0 5 10 15 20"
 
 NUM_SURF=$(echo "$SURFACES" | wc -w)
 NUM_AVG=$(echo "$AVERAGINGS" | wc -w)
 
 echo "$APPTAG Running for $NUM_SURF surfaces: $SURFACES"
 echo "$APPTAG Running for $NUM_AVG averagings: $AVERAGINGS"
+echo "$APPTAG Running with subjects data from file $SUBJECTS_FILE"
 
 CURRENT_SURF=0
 
