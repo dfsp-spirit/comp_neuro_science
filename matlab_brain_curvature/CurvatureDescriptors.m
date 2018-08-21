@@ -113,7 +113,7 @@ classdef CurvatureDescriptors
             description = 'the larger principal curvature: k1 | k1 >= k2';
             suggested_plot_range = [-1.1, 0.8];
             curv = obj.k1;
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -124,7 +124,7 @@ classdef CurvatureDescriptors
             description = 'the smaller principal curvature: k2 | k1 >= k2';
             suggested_plot_range = [-0.4, 0.3];
             curv = obj.k2;
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -135,7 +135,7 @@ classdef CurvatureDescriptors
             description = 'the larger absolute principal curvature: k_major | abs(k_major) >= abs(k_minor)';
             suggested_plot_range = [-1.1, 0.8];
             curv = obj.k_major;
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -146,7 +146,7 @@ classdef CurvatureDescriptors
             description = 'the smaller absolute principal curvature: k_minor | abs(k_major) >= abs(k_minor)';
             suggested_plot_range = [-0.4, 0.3];
             curv = obj.k_minor;
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -157,7 +157,7 @@ classdef CurvatureDescriptors
             description = 'the Gaussian curvature: K = k_major * k_minor';
             suggested_plot_range = [-0.1, 0.3];
             curv = obj.k_major .* obj.k_minor;
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -168,7 +168,7 @@ classdef CurvatureDescriptors
             description = 'the mean curvature: (k_major + k_minor)/2';
             suggested_plot_range = [-0.7, 0.5];
             curv = (obj.k_major + obj.k_minor) / 2;
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -181,7 +181,7 @@ classdef CurvatureDescriptors
             suggested_plot_range = [0.0, 0.3];
             k = obj.gaussian_curvature().data;
             curv = max(0, k);
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -193,7 +193,7 @@ classdef CurvatureDescriptors
             suggested_plot_range = [-0.1, 0.0];
             k = obj.gaussian_curvature().data;
             curv = min(0, k);
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -205,7 +205,7 @@ classdef CurvatureDescriptors
             suggested_plot_range = [0.0, 0.2];
             k = obj.gaussian_curvature().data;
             curv = abs(k);
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -217,7 +217,7 @@ classdef CurvatureDescriptors
             suggested_plot_range = [0.0, 0.5];
             h = obj.mean_curvature().data;
             curv = max(0, h);
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -229,7 +229,7 @@ classdef CurvatureDescriptors
             suggested_plot_range = [-0.7, 0.0];
             h = obj.mean_curvature().data;
             curv = min(0, h);
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -241,7 +241,7 @@ classdef CurvatureDescriptors
             suggested_plot_range = [0, 0.6];
             h = obj.mean_curvature().data;
             curv = abs(h);
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -253,7 +253,7 @@ classdef CurvatureDescriptors
             suggested_plot_range = [-0.7, 0.0];
             h = obj.mean_curvature().data;
             curv = h .* h;
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -265,7 +265,7 @@ classdef CurvatureDescriptors
             suggested_plot_range = [-0.7, 0.0];
             k = obj.gaussian_curvature().data;
             curv = k .* k;
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -276,7 +276,7 @@ classdef CurvatureDescriptors
             description = 'the folding index: FI = ABS(k_major) * (ABS(k_major) - ABS(k_minor))';
             suggested_plot_range = [0.0, 0.8];
             curv = abs(obj.k_major) .* (abs(obj.k_major) - abs(obj.k_minor));
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -287,7 +287,7 @@ classdef CurvatureDescriptors
             description = 'the curvedness index: CI = SQRT((k_major * k_major + k_minor * k_minor) / 2.0)';
             suggested_plot_range = [0.0, 0.7];
             curv = sqrt((obj.k_major .* obj.k_major + obj.k_minor .* obj.k_minor) ./ 2.0);
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -301,7 +301,7 @@ classdef CurvatureDescriptors
             condition_one = h > 0;
             condition_zero = h <= 0;
             curv = 1 .* condition_one + 0 .* condition_zero + h .* (~(condition_one | condition_zero));
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 1);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 1);
         end
 
 
@@ -315,7 +315,7 @@ classdef CurvatureDescriptors
             condition_one = h < 0;
             condition_zero = h >= 0;
             curv = 1 .* condition_one + 0 .* condition_zero + h .* (~(condition_one | condition_zero));
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 1);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 1);
         end
 
 
@@ -329,7 +329,7 @@ classdef CurvatureDescriptors
             condition_one = k > 0;
             condition_zero = k <= 0;
             curv = 1 .* condition_one + 0 .* condition_zero + k .* (~(condition_one | condition_zero));
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 1);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 1);
         end
 
 
@@ -343,7 +343,7 @@ classdef CurvatureDescriptors
             condition_one = k < 0;
             condition_zero = k >= 0;
             curv = 1 .* condition_one + 0 .* condition_zero + k .* (~(condition_one | condition_zero));
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 1);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 1);
         end
 
 
@@ -356,7 +356,7 @@ classdef CurvatureDescriptors
             mln = obj.mean_l2_norm().data;
             amci = obj.absolute_mean_curvature_index().data;
             curv = mln ./ amci;
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -370,7 +370,7 @@ classdef CurvatureDescriptors
             curv = gln ./ aici;
             %suggested_plot_range = [0.0, 0.2];
             suggested_plot_range = obj.find_plot_range(curv, 30, 30);
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -382,7 +382,7 @@ classdef CurvatureDescriptors
             description = 'the shape index: SI = (2.0 / PI) * ATAN((k1 + k2) / (k2 - k1))';
             suggested_plot_range = [-1.0, 1.0];
             curv = (2.0 / pi) * atan((obj.k1 + obj.k2) ./ (obj.k2 - obj.k1));
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 0);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 0);
         end
 
 
@@ -419,7 +419,7 @@ classdef CurvatureDescriptors
             if num_out_of_range > 0
                 fprintf('WARNING: CurvatureDescriptors.shape_type: Received %d shape index values that were out of range.', num_out_of_range);
             end
-            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, is_discrete, 1);
+            res = struct('data', curv, 'name', name, 'description', description, 'short_name', short_name, 'suggested_plot_range', suggested_plot_range, 'is_discrete', 1);
         end
 
 
