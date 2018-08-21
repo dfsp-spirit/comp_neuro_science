@@ -9,8 +9,8 @@
 
 ## You will need to adapt the next two lines to your system:
 
-#CPC_SCRIPT="$HOME/develop/comp_neuro_science/matlab_brain_curvature/compute_principal_curvature.bash"
-CPC_SCRIPT="$HOME/scripts/compute_principal_curvature.bash"
+CPC_SCRIPT="$HOME/develop/comp_neuro_science/matlab_brain_curvature/compute_principal_curvature.bash"
+#CPC_SCRIPT="$HOME/scripts/compute_principal_curvature.bash"
 SUBJECTS_FILE="subjects_analysis.txt"
 
 
@@ -38,8 +38,8 @@ echo "$APPTAG ===[ Wrapper to run the curvature computation script with differen
 
 # run the script for all settings
 SURFACES="pial white"
-#AVERAGINGS="1 2 3 4"
-AVERAGINGS="0 5 10 15 20"
+AVERAGINGS="1 2 3 4"
+#AVERAGINGS="0 5 10 15 20"
 
 NUM_SURF=$(echo "$SURFACES" | wc -w)
 NUM_AVG=$(echo "$AVERAGINGS" | wc -w)
@@ -57,7 +57,7 @@ for SURFACE in $SURFACES; do
         CURRENT_AVG=$((CURRENT_AVG + 1))
         LABEL=".a${AVG}"
         LOGFILE="run_cpc_${SURFACE}_${AVG}.log"
-        echo "$APPTAG Running cpc script for surface $SURFACE (S# $CURRENT_SURF of ${NUM_SURF}) with averaging set to $AVG (A# $CURRENT_AVG of ${NUM_AVG})."
+        echo "$APPTAG Running cpc script for surface $SURFACE (S# $CURRENT_SURF of ${NUM_SURF}) with averaging set to $AVG (A# $CURRENT_AVG of ${NUM_AVG}). Outfile label: '$LABEL'."
         $CPC_SCRIPT $SUBJECTS_FILE $SURFACE $LABEL "-a ${AVG}" | tee $LOGFILE
     done
 done
