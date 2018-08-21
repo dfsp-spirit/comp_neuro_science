@@ -33,4 +33,4 @@ Note that you may need to configure matplotlib to use some backend that exists o
 
     python -c "from pylab import *; plot(); show();" --verbose-helpful
 
-Do not omit the last part, otherwise no error message is displayed if something goes wrong.
+Do not omit the last part, otherwise no error message is displayed if something goes wrong. Note that, depending on the backend you decide for, you may need to install additional python packages for that backend into the environment. To do that, search them in pip, then add them to the `environment.yml` file manually, then run `conda env update` to have conda actually install them.
