@@ -394,7 +394,7 @@ classdef CurvatureDescriptors
             description = 'the shape type: 1 for -1<=SI<-0.5 (sulcal pit), 2 for -0.5<=SI<-0 (sulcal saddle), 3 for 0<=SI<0.5 (gyral saddle), and 4 for 0.5<=SI<1 (gyral node)';
             suggested_plot_range = [1, 4];
             si = obj.shape_index().data;
-            curv = zeros(1, length(si));
+            curv = zeros(length(si), 1);
             num_out_of_range = 0;
             border1 = -1.0;
             border2 = -0.5;
