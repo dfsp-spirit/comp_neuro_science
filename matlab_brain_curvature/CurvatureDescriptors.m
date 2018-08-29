@@ -438,6 +438,11 @@ classdef CurvatureDescriptors
             highest_value_to_plot = nanmax(data_filtered);
             range = [lowest_value_to_plot, highest_value_to_plot];
         end
+        
+        function res = compute_by_descriptor_short_name(obj, descriptor_short_name)
+            %fh = str2func(descriptor_short_name);
+            res = obj.(descriptor_short_name);
+        end
 
         function res = compute_all_as_map(obj)
             % Convenience function that computes all folding measures and
