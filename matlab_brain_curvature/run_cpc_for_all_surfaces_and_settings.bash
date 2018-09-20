@@ -38,8 +38,8 @@ echo "$APPTAG ===[ Wrapper to run the curvature computation script with differen
 
 # run the script for all settings
 SURFACES="pial white"
-AVERAGINGS="1 2 3 4"
-#AVERAGINGS="0 5 10 15 20"
+AVERAGINGS="10"
+#AVERAGINGS="0 1 2 3 4 5 10 15 20"
 
 NUM_SURF=$(echo "$SURFACES" | wc -w)
 NUM_AVG=$(echo "$AVERAGINGS" | wc -w)

@@ -5,12 +5,16 @@
 
 ##### Settings -- you can adapt these to your needs. #####
 
-# path to the mris_curvature binary. It is fine like this if mris_curvature is on your PATH.
+## path to the mris_curvature binary. It is fine like this if mris_curvature is on your PATH.
 MRIS_CURVATURE_BINARY=$(which mris_curvature)
 
-# The command line options passed to mris_curvature. (The input surface file and the options to compute the principal curvatures get added automatically, so do not add it here.)
-# Note that there is no need to edit this in this script, you can also use the <mc_opt> command line argument to change this.
+#W The command line options passed to mris_curvature. (The input surface file and the options to compute the principal curvatures get added automatically, so do not add it here.)
+## Note that there is no need to edit this in this script, you can also use the <mc_opt> command line argument to change this.
 MRIS_CURVATURE_OPTIONS="-a 10"
+
+## whether to map the results to fsaverage (standard space) from subject space
+DO_MAP_TO_FSAVERAGE="YES"
+FSAVERAGE_OUTPUT_SMOOTHING="10"
 
 
 ##### Start of script, there should be no need to change stuff below this line. #####
@@ -103,6 +107,18 @@ for SUBJECT in $ALL_SUBJECT_IDS; do
                         NUM_OUTPUT_MOVE_FAIL=$((NUM_OUTPUT_MOVE_FAIL + 1))
                         OUTPUT_FILES_MOVE_FAILED_LIST="${OUTPUT_FILES_MOVE_FAILED_LIST}:${SUBJECT}/surf/${OUTFILE}"
                    fi
+                done
+            fi
+
+            # Map the data to fsaverage space if requested
+            if [ "${DO_MAP_TO_FSAVERAGE}" = "YES" ]; then
+                HEMISPHERES="lh rh"
+                for HEMISPHERE in $HEMISPHERES; do
+                    PRINCIPAL_CURVATURES="min max"
+                    for PRINCIPAL_CURVATURE in $PRINCIPAL_CURVATURES; do
+                        OUTPUT_FSAVG_FILE="principal_curvature_${PRINCIPAL_CURVATURE}_${SURFACE}_${HEMISPHERE}.fwhm${FSAVERAGE_OUTPUT_SMOOTHING}${SUFFIX}.mgh"
+                        mris_preproc --s ${SUBJECT} --target fsaverage --hemi ${HEMISPHERE} --fwhm ${FSAVERAGE_OUTPUT_SMOOTHING} --out ${OUTPUT_FSAVG_FILE} --meas ${SURFACE}.${PRINCIPAL_CURVATURE}${SUFFIX} --area ${SURFACE}
+                    done
                 done
             fi
         fi
