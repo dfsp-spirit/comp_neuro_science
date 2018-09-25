@@ -13,7 +13,9 @@ MRIS_CURVATURE_BINARY=$(which mris_curvature)
 MRIS_CURVATURE_OPTIONS="-a 10"
 
 ## whether to map the results to fsaverage (standard space) from subject space
-DO_MAP_TO_FSAVERAGE="YES"
+DO_RUN_MRIS_CURVATURE="YES"
+DO_CONVERT_RESULTS_TO_FREESURFER_FORMAT="NO"
+DO_MAP_TO_FSAVERAGE="NO"
 FSAVERAGE_OUTPUT_SMOOTHING="10"
 
 
@@ -79,49 +81,83 @@ NUM_FAIL=0
 NUM_OUTPUT_MOVE_FAIL=0
 OUTPUT_FILES_MOVE_FAILED_LIST=""
 
+NUM_FAIL_CONVERT=0
+FAILED_CONVERT_LIST=""
+
+NUM_FAIL_MAP_TO_FSAVG=0
+FAILED_MAP_TO_FSAVG_LIST=""
+
+
 for SUBJECT in $ALL_SUBJECT_IDS; do
     NUM_SUBJECTS=$((NUM_SUBJECTS + 1))
     echo "$APPTAG Handling subject ${SUBJECT}, which is # ${NUM_SUBJECTS} of ${SUBJECT_COUNT}."
     SUBJECT_SURF_DIR="${SUBJECT}/surf"
     if [ -d "$SUBJECT_SURF_DIR" ]; then
-        cd "$SUBJECT_SURF_DIR" && $MRIS_CURVATURE_BINARY $MRIS_CURVATURE_REQUIRED_OPTIONS $MRIS_CURVATURE_OPTIONS rh.${SURFACE} && $MRIS_CURVATURE_BINARY $MRIS_CURVATURE_REQUIRED_OPTIONS $MRIS_CURVATURE_OPTIONS lh.${SURFACE}
 
-        retVal=$?
-        if [ $retVal -ne 0 ]; then
-            NUM_FAIL=$((NUM_FAIL + 1))
-            FAILED_LIST="${FAILED_LIST}:${SUBJECT}"
-            echo "$APPTAG ERROR: mris_curvature command failed for subject '$SUBJECT'."
-        else
-            NUM_OK=$((NUM_OK + 1))
-            #echo "$APPTAG Handled surface $SURFACE for subject '$SUBJECT': OK."
+        cd "$SUBJECT_SURF_DIR"
 
-            # Rename principal curvature output files if a suffix was given
-            if [ -n "$SUFFIX" ]; then
-                EXPECTED_OUTPUT_FILES="lh.${SURFACE}.max lh.${SURFACE}.min rh.${SURFACE}.max rh.${SURFACE}.min"
-                for OUTFILE in $EXPECTED_OUTPUT_FILES
-                do
-                    #echo "$APPTAG   Moving output file ${OUTFILE} for subject ${SUBJECT} to ${OUTFILE}${SUFFIX}."
-                    mv "$OUTFILE" "${OUTFILE}${SUFFIX}"
-                    retVal=$?
-                    if [ $retVal -ne 0 ]; then
-                        NUM_OUTPUT_MOVE_FAIL=$((NUM_OUTPUT_MOVE_FAIL + 1))
-                        OUTPUT_FILES_MOVE_FAILED_LIST="${OUTPUT_FILES_MOVE_FAILED_LIST}:${SUBJECT}/surf/${OUTFILE}"
-                   fi
-                done
-            fi
+        if [ "${DO_RUN_MRIS_CURVATURE}" = "YES" ]; then
 
-            # Map the data to fsaverage space if requested
-            if [ "${DO_MAP_TO_FSAVERAGE}" = "YES" ]; then
-                HEMISPHERES="lh rh"
-                for HEMISPHERE in $HEMISPHERES; do
-                    PRINCIPAL_CURVATURES="min max"
-                    for PRINCIPAL_CURVATURE in $PRINCIPAL_CURVATURES; do
-                        OUTPUT_FSAVG_FILE="principal_curvature_${PRINCIPAL_CURVATURE}_${SURFACE}_${HEMISPHERE}.fwhm${FSAVERAGE_OUTPUT_SMOOTHING}${SUFFIX}.mgh"
-                        mris_preproc --s ${SUBJECT} --target fsaverage --hemi ${HEMISPHERE} --fwhm ${FSAVERAGE_OUTPUT_SMOOTHING} --out ${OUTPUT_FSAVG_FILE} --meas ${SURFACE}.${PRINCIPAL_CURVATURE}${SUFFIX} --area ${SURFACE}
+            echo "$APPTAG  - Running mris_curvature."
+
+            $MRIS_CURVATURE_BINARY $MRIS_CURVATURE_REQUIRED_OPTIONS $MRIS_CURVATURE_OPTIONS rh.${SURFACE} && $MRIS_CURVATURE_BINARY $MRIS_CURVATURE_REQUIRED_OPTIONS $MRIS_CURVATURE_OPTIONS lh.${SURFACE}
+
+            if [ $? -ne 0 ]; then
+                NUM_FAIL=$((NUM_FAIL + 1))
+                FAILED_LIST="${FAILED_LIST}:${SUBJECT}"
+                echo "$APPTAG ERROR: mris_curvature command failed for subject '$SUBJECT'."
+            else
+                NUM_OK=$((NUM_OK + 1))
+                #echo "$APPTAG Handled surface $SURFACE for subject '$SUBJECT': OK."
+
+                # Rename principal curvature output files if a suffix was given
+                if [ -n "$SUFFIX" ]; then
+                    EXPECTED_OUTPUT_FILES="lh.${SURFACE}.max lh.${SURFACE}.min rh.${SURFACE}.max rh.${SURFACE}.min"
+                    for OUTFILE in $EXPECTED_OUTPUT_FILES
+                    do
+                        #echo "$APPTAG   Moving output file ${OUTFILE} for subject ${SUBJECT} to ${OUTFILE}${SUFFIX}."
+                        mv "$OUTFILE" "${OUTFILE}${SUFFIX}"
+                        retVal=$?
+                        if [ $retVal -ne 0 ]; then
+                            NUM_OUTPUT_MOVE_FAIL=$((NUM_OUTPUT_MOVE_FAIL + 1))
+                            OUTPUT_FILES_MOVE_FAILED_LIST="${OUTPUT_FILES_MOVE_FAILED_LIST}:${SUBJECT}/surf/${OUTFILE}"
+                       fi
                     done
-                done
+                fi
             fi
         fi
+
+        CONVERSION_INPUT_CURVATURE_FILE_WITHOUT_HEMISPHERE_PREFIX="${SURFACE}.${PRINCIPAL_CURVATURE}${SUFFIX}"
+        CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX="${SURFACE}.${PRINCIPAL_CURVATURE}${SUFFIX}.mgh"
+        if [ "${DO_CONVERT_RESULTS_TO_FREESURFER_FORMAT}" = "YES" ]; then
+            echo "$APPTAG  - Converting results to FreeSurfer format using mri_convert."
+            mri_convert lh.${CONVERSION_INPUT_CURVATURE_FILE_WITHOUT_HEMISPHERE_PREFIX} lh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX} && mri_convert rh.${CONVERSION_INPUT_CURVATURE_FILE_WITHOUT_HEMISPHERE_PREFIX} rh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}
+            if [ $? -ne 0 ]; then
+                echo "$APPTAG ERROR: Conversion to FreeSurfer format using mri_convert failed for subject '$SUBJECT'."
+                NUM_FAIL_CONVERT=$((NUM_FAIL_CONVERT + 1))
+                FAILED_CONVERT_LIST="${FAILED_CONVERT_LIST}:${SUBJECT}"
+            fi
+        fi
+
+        # Map the data to fsaverage space if requested
+        if [ "${DO_MAP_TO_FSAVERAGE}" = "YES" ]; then
+            echo "$APPTAG  - Mapping data to fsaverage based on input files 'lh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}' and 'rh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}'."
+            HEMISPHERES="lh rh"
+            for HEMISPHERE in $HEMISPHERES; do
+                PRINCIPAL_CURVATURES="min max"
+                for PRINCIPAL_CURVATURE in $PRINCIPAL_CURVATURES; do
+                    INPUT_CURVATURE_FILE="${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}"
+                    OUTPUT_FSAVG_FILE="principal_curvature_${PRINCIPAL_CURVATURE}_${SURFACE}_${HEMISPHERE}.fwhm${FSAVERAGE_OUTPUT_SMOOTHING}${SUFFIX}.mgh"
+                    mris_preproc --s ${SUBJECT} --target fsaverage --hemi ${HEMISPHERE} --fwhm ${FSAVERAGE_OUTPUT_SMOOTHING} --out ${OUTPUT_FSAVG_FILE} --meas ${INPUT_CURVATURE_FILE} --area ${SURFACE}
+                    if [ $? -ne 0 ]; then
+                        echo "$APPTAG ERROR: Mapping data of principal curvature ${PRINCIPAL_CURVATURE} for hemisphere ${HEMISPHERE} to fsaverage failed for subject '$SUBJECT'."
+                        NUM_FAIL_MAP_TO_FSAVG=$((NUM_FAIL_MAP_TO_FSAVG + 1))
+                        FAILED_MAP_TO_FSAVG_LIST="${FAILED_MAP_TO_FSAVG_LIST}:${SUBJECT}.${HEMISPHERE}.${PRINCIPAL_CURVATURE}"
+                    fi
+                done
+            done
+        fi
+
     else
         NUM_FAIL=$((NUM_FAIL + 1))
         FAILED_LIST="${FAILED_LIST}:${SUBJECT}"
@@ -134,11 +170,19 @@ echo "$APPTAG All done. Found $NUM_SUBJECTS subjects listed in subjects file '$S
 echo "$APPTAG All subjects for which it worked out should have the results in the four files: <subject>/surf/lh.${SURFACE}.max${SUFFIX} and <subject>/surf/lh.${SURFACE}.min${SUFFIX}, <subject>/surf/rh.${SURFACE}.max${SUFFIX}, and <subject>/surf/rh.${SURFACE}.min${SUFFIX}."
 if [ $NUM_FAIL -gt 0 ]; then
     FAILED_LIST="${FAILED_LIST:1}"    # remove the colon before the first element.
-    echo "$APPTAG [WARNING] The $NUM_FAIL failed subject ids, separated by colons, follow. ${FAILED_LIST}"
+    echo "$APPTAG [WARNING] The $NUM_FAIL subject ids for which running mris_curvature failed, separated by colons, follow. ${FAILED_LIST}"
 fi
 if [ $NUM_OUTPUT_MOVE_FAIL -gt 0 ]; then
     OUTPUT_FILES_MOVE_FAILED_LIST="${OUTPUT_FILES_MOVE_FAILED_LIST:1}"    # remove the colon before the first element.
     echo "$APPTAG [WARNING] The $NUM_OUTPUT_MOVE_FAIL expected output files that could not be renamed with suffix '${SUFFIX}', separated by colons, follow. ${OUTPUT_FILES_MOVE_FAILED_LIST}"
+fi
+if [ $NUM_FAIL_CONVERT -gt 0 ]; then
+    FAILED_CONVERT_LIST="${FAILED_CONVERT_LIST:1}"    # remove the colon before the first element.
+    echo "$APPTAG [WARNING] The $NUM_FAIL_CONVERT subject ids for which conversion to FreeSurfer format failed, separated by colons, follow. ${FAILED_CONVERT_LIST}"
+fi
+if [ $NUM_FAIL_MAP_TO_FSAVG -gt 0 ]; then
+    FAILED_MAP_TO_FSAVG_LIST="${FAILED_MAP_TO_FSAVG_LIST:1}"    # remove the colon before the first element.
+    echo "$APPTAG [WARNING] The $NUM_FAIL_MAP_TO_FSAVG files for which mapping to fsaverage failed, separated by colons, follow (4 files per subject). ${FAILED_MAP_TO_FSAVG_LIST}"
 fi
 
 # log the mris_curvature settings that were used during this run to a file.
