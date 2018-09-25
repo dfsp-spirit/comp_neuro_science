@@ -74,6 +74,14 @@ classdef CurvatureDescriptors
         function dsn = get_all_descriptor_short_names()
             dsn = {'principal_curvature_k1', 'principal_curvature_k2', 'principal_curvature_k_major', 'principal_curvature_k_minor', 'mean_curvature', 'gaussian_curvature', 'intrinsic_curvature_index', 'negative_intrinsic_curvature_index', 'gaussian_l2_norm', 'absolute_intrinsic_curvature_index', 'mean_curvature_index','negative_mean_curvature_index','mean_l2_norm','absolute_mean_curvature_index','folding_index', 'curvedness_index','shape_index','shape_type','area_fraction_of_intrinsic_curvature_index','area_fraction_of_negative_intrinsic_curvature_index', 'area_fraction_of_mean_curvature_index','area_fraction_of_negative_mean_curvature_index','sh2sh','sk2sk'};
         end
+        
+        function dsn_array = get_all_descriptor_short_names_as_array()
+            dsn = CurvatureDescriptors.get_all_descriptor_short_names();
+            dsn_array = strings(size(dsn));
+            [dsn_array{:}] = dsn{:};
+        end
+        
+        
     end
 
     methods
