@@ -1,4 +1,4 @@
-function measure_data = read_subject_data(subject_id, subjects_dir, measure, surf)
+function measure_data = read_subject_data_avg(subject_id, subjects_dir, measure, surf, fwhm)
 %% Read subject morphometry data. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
 %% Assumes that the morphometry data files are in curv format (like lh.area).
 
