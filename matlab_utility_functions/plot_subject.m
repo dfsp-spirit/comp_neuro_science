@@ -1,4 +1,4 @@
-function res = plot_subject(subject_id, subjects_dir, measure, surf)
+function fig_handle = plot_subject(subject_id, subjects_dir, measure, surf)
 %% Display the data on a surface. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
 
 
@@ -14,8 +14,8 @@ display_surface = SurfStatReadSurf ( {lh_display_surf_file, rh_display_surf_file
 
 measure_data = read_subject_data(subject_id, subjects_dir, measure, surf);
 
-figure
+figure;
 SurfStatView(measure_data, display_surface, plot_title);
-res = 1;
+fig_handle = gcf;
 
 end

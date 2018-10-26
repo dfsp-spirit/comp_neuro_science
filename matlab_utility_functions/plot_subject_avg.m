@@ -1,4 +1,4 @@
-function res = plot_subject_avg(subject_id, subjects_dir, measure, surf, fwhm, display_surf)
+function fig_handle = plot_subject_avg(subject_id, subjects_dir, measure, surf, fwhm, display_surf)
 %% Display the data on a surface. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
 %% Assums the data has been mapped to fsaverage and displays on its surfaces.
 
@@ -15,8 +15,8 @@ display_surface = SurfStatReadSurf ( {lh_display_surf_file, rh_display_surf_file
 
 measure_data = read_subject_avg_data(subject_id, subjects_dir, measure, surf, fwhm);
 
-figure
+figure;
 SurfStatView(measure_data, display_surface, plot_title);
-res = 1;
+fig_handle = gcf;
 
 end
