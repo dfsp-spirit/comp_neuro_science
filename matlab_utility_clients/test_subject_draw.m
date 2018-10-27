@@ -11,6 +11,10 @@ fprintf("Found %d subjects in subjects file.\n", length(subjects));
 
 % Load subjects data
 alot_of_data = load_group_data(subjects, subjects_dir, 'area', 'white', '10');
+subject_5 = alot_of_data{1, 5};
+fprintf("Selected subject at index 5: %s\n", subject_5);
+fprintf("Length of data for subject %s is %d.\n", subject_5, length(alot_of_data{2, 5}));
+
 
 %fig = plot_subject('tim', subjects_dir, 'area', 'white');
 %fig = plot_subject_avg('tim', subjects_dir, 'area', 'white', '10', 'inflated');
