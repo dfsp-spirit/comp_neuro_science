@@ -2,9 +2,14 @@
 % Plot subject
 
 user_home = getenv('HOME');
-subjects_dir = fullfile(user_home, 'data', 'tim_only');
+%subjects_dir = fullfile(user_home, 'data', 'tim_only');
+subjects_dir = fullfile(user_home, 'data', 'euaims_curvature');
 
-fig = plot_subject('tim', subjects_dir, 'area', 'white');
+% Load subjects from a subjects.txt or demographics file.
+subjects = read_subjects_file('subjects.txt', subjects_dir);
+fprintf("Found %d subjects in subjects file.\n", length(subjects));
+
+%fig = plot_subject('tim', subjects_dir, 'area', 'white');
 %fig = plot_subject_avg('tim', subjects_dir, 'area', 'white', '10', 'inflated');
 
 %% Adjust color map and/or plooting range if you feel like it.
