@@ -9,6 +9,9 @@ subjects_dir = fullfile(user_home, 'data', 'euaims_curvature');
 subjects = read_subjects_file('subjects.txt', subjects_dir);
 fprintf("Found %d subjects in subjects file.\n", length(subjects));
 
+% Load subjects data
+alot_of_data = load_group_data(subjects, subjects_dir, 'area', 'white', '10');
+
 %fig = plot_subject('tim', subjects_dir, 'area', 'white');
 %fig = plot_subject_avg('tim', subjects_dir, 'area', 'white', '10', 'inflated');
 
