@@ -9,7 +9,7 @@ C = cell(2, num_subjects);
 group_data = C;
 
 for subject_idx = 1:num_subjects
-  subject_id = subjects_list(subject_idx);
+  subject_id = char(subjects_list(subject_idx));
   subject_data = read_subject_avg_data(subject_id, subjects_dir, measure, surf, fwhm);
   group_data{1, subject_idx} = subject_id;
   group_data{2, subject_idx} = subject_data;
