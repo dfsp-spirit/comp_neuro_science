@@ -10,7 +10,7 @@ subjects = read_subjects_file('subjects.txt', subjects_dir);
 fprintf("Found %d subjects in subjects file.\n", length(subjects));
 
 % Load subjects data
-alot_of_data = load_group_data(subjects, subjects_dir, 'area', 'white', '10');
+alot_of_data = load_group_data_cell(subjects, subjects_dir, 'area', 'white', '10');
 subject_5 = alot_of_data{1, 5};
 fprintf("Selected subject at index 5: %s\n", subject_5);
 fprintf("Length of data for subject %s is %d.\n", subject_5, length(alot_of_data{2, 5}));
