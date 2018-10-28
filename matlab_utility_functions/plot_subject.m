@@ -9,6 +9,12 @@ subject_surf_dir = fullfile(subjects_dir, subject_id, 'surf');
 
 lh_display_surf_file = fullfile(subject_surf_dir, strcat('lh.', surf));
 rh_display_surf_file = fullfile(subject_surf_dir, strcat('rh.', surf));
+if exist(lh_display_surf_file, 'file') ~= 2
+    fprintf("ERROR: lh surf file '%s' does not exist. Check the path.\n", lh_display_surf_file);
+end
+if exist(rh_display_surf_file, 'file') ~= 2
+    fprintf("ERROR: rh surf file '%s' does not exist. Check the path.\n", rh_display_surf_file);
+end
 
 display_surface = SurfStatReadSurf ( {lh_display_surf_file, rh_display_surf_file} );
 
