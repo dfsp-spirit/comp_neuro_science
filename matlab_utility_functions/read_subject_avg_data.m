@@ -12,6 +12,15 @@ rh_data_filename = sprintf('rh.%s%s.fwhm%s.%s.mgh', measure, surf_fn_part, fwhm,
 lh_data_file = fullfile(subject_surf_dir, lh_data_filename);
 rh_data_file = fullfile(subject_surf_dir, rh_data_filename);
 
+if exist(lh_data_file, 'file') ~= 2
+    fprintf("ERROR: lh data file '%s' does not exist. Check the path.\n", lh_data_file);
+end
+
+if exist(rh_data_file, 'file') ~= 2
+    fprintf("ERROR: rh data file '%s' does not exist. Check the path.\n", rh_data_file);
+end
+
+
 measure_data_lh = SurfStatReadData(lh_data_file);
 measure_data_rh = SurfStatReadData(rh_data_file);
 
