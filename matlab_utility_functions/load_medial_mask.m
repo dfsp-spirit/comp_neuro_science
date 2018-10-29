@@ -1,4 +1,4 @@
-function medial_mask = load_medial_mask(mask_file)
+function medial_mask = load_medial_mask(medial_mask_file)
 % Loads a medial mask, i.e., a mask to zero out the vertices along the medial wall of a brain surface.
 % The mask is a logical 1D array, and each value (1 or 0) indicates whether the respective vertex is part of the medial wall or not.
 % Obviously, the mask has to fit your subject, but the function is commonly used to load the mask for the FreeSurfer 'fsaverage' subject.
