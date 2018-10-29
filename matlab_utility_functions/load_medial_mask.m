@@ -4,6 +4,10 @@ function medial_mask = load_medial_mask(medial_mask_file)
 % Obviously, the mask has to fit your subject, but the function is commonly used to load the mask for the FreeSurfer 'fsaverage' subject.
 % The medial wall is masked out because it by definition NOT part of the cortex.
 % The mask is expected to be in a matlab file (file extension '.mat'), stored in a struct named 'mask' that has 'lh' and 'rh' keys.
+% To visualize the mask, try the following:
+%     subjects_dir = fullfile('path', 'to', 'freesurfer', 'subjects');  % a dir that contains 'fsaverage'.
+%     medial_mask = load_medial_mask('medial_mask_fsaverage.mat');
+%     fd = plot_custom_data_avg(subjects_dir, double(medial_mask), 'white', 'mask');
 
 if exist(medial_mask_file, 'file') ~= 2
     fprintf("ERROR: load_medial_mask: Medial mask file '%s' does not exist. Check the path.\n", medial_mask_file);
