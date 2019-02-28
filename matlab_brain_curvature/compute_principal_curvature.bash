@@ -127,36 +127,38 @@ for SUBJECT in $ALL_SUBJECT_IDS; do
             fi
         fi
 
-        CONVERSION_INPUT_CURVATURE_FILE_WITHOUT_HEMISPHERE_PREFIX="${SURFACE}.${PRINCIPAL_CURVATURE}${SUFFIX}"
-        CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX="${SURFACE}.${PRINCIPAL_CURVATURE}${SUFFIX}.mgh"
-        if [ "${DO_CONVERT_RESULTS_TO_FREESURFER_FORMAT}" = "YES" ]; then
-            echo "$APPTAG  - Converting results to FreeSurfer format using mri_convert."
-            mri_convert lh.${CONVERSION_INPUT_CURVATURE_FILE_WITHOUT_HEMISPHERE_PREFIX} lh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX} && mri_convert rh.${CONVERSION_INPUT_CURVATURE_FILE_WITHOUT_HEMISPHERE_PREFIX} rh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}
-            if [ $? -ne 0 ]; then
-                echo "$APPTAG ERROR: Conversion to FreeSurfer format using mri_convert failed for subject '$SUBJECT'."
-                NUM_FAIL_CONVERT=$((NUM_FAIL_CONVERT + 1))
-                FAILED_CONVERT_LIST="${FAILED_CONVERT_LIST}:${SUBJECT}"
+        PRINCIPAL_CURVATURES="min max"
+        for PRINCIPAL_CURVATURE in $PRINCIPAL_CURVATURES; do
+            CONVERSION_INPUT_CURVATURE_FILE_WITHOUT_HEMISPHERE_PREFIX="${SURFACE}.${PRINCIPAL_CURVATURE}${SUFFIX}"
+            CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX="${SURFACE}.${PRINCIPAL_CURVATURE}${SUFFIX}.mgh"
+            if [ "${DO_CONVERT_RESULTS_TO_FREESURFER_FORMAT}" = "YES" ]; then
+                echo "$APPTAG  - Converting results to FreeSurfer format using mri_convert."
+                mri_convert lh.${CONVERSION_INPUT_CURVATURE_FILE_WITHOUT_HEMISPHERE_PREFIX} lh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX} && mri_convert rh.${CONVERSION_INPUT_CURVATURE_FILE_WITHOUT_HEMISPHERE_PREFIX} rh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}
+                if [ $? -ne 0 ]; then
+                    echo "$APPTAG ERROR: Conversion to FreeSurfer format using mri_convert failed for subject '$SUBJECT'."
+                    NUM_FAIL_CONVERT=$((NUM_FAIL_CONVERT + 1))
+                    FAILED_CONVERT_LIST="${FAILED_CONVERT_LIST}:${SUBJECT}"
+                fi
             fi
-        fi
 
-        # Map the data to fsaverage space if requested
-        if [ "${DO_MAP_TO_FSAVERAGE}" = "YES" ]; then
-            echo "$APPTAG  - Mapping data to fsaverage based on input files 'lh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}' and 'rh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}'."
-            HEMISPHERES="lh rh"
-            for HEMISPHERE in $HEMISPHERES; do
-                PRINCIPAL_CURVATURES="min max"
-                for PRINCIPAL_CURVATURE in $PRINCIPAL_CURVATURES; do
-                    INPUT_CURVATURE_FILE="${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}"
-                    OUTPUT_FSAVG_FILE="principal_curvature_${PRINCIPAL_CURVATURE}_${SURFACE}_${HEMISPHERE}.fwhm${FSAVERAGE_OUTPUT_SMOOTHING}${SUFFIX}.mgh"
-                    mris_preproc --s ${SUBJECT} --target fsaverage --hemi ${HEMISPHERE} --fwhm ${FSAVERAGE_OUTPUT_SMOOTHING} --out ${OUTPUT_FSAVG_FILE} --meas ${INPUT_CURVATURE_FILE} --area ${SURFACE}
-                    if [ $? -ne 0 ]; then
-                        echo "$APPTAG ERROR: Mapping data of principal curvature ${PRINCIPAL_CURVATURE} for hemisphere ${HEMISPHERE} to fsaverage failed for subject '$SUBJECT'."
-                        NUM_FAIL_MAP_TO_FSAVG=$((NUM_FAIL_MAP_TO_FSAVG + 1))
-                        FAILED_MAP_TO_FSAVG_LIST="${FAILED_MAP_TO_FSAVG_LIST}:${SUBJECT}.${HEMISPHERE}.${PRINCIPAL_CURVATURE}"
-                    fi
+            # Map the data to fsaverage space if requested
+            if [ "${DO_MAP_TO_FSAVERAGE}" = "YES" ]; then
+                echo "$APPTAG  - Mapping data to fsaverage based on input files 'lh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}' and 'rh.${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}'."
+                HEMISPHERES="lh rh"
+                for HEMISPHERE in $HEMISPHERES; do
+
+                        INPUT_CURVATURE_FILE="${CONVERSION_OUTPUT_MGH_FILE_WITHOUT_HEMISPHERE_PREFIX}"
+                        OUTPUT_FSAVG_FILE="principal_curvature_${PRINCIPAL_CURVATURE}_${SURFACE}_${HEMISPHERE}.fwhm${FSAVERAGE_OUTPUT_SMOOTHING}${SUFFIX}.mgh"
+                        mris_preproc --s ${SUBJECT} --target fsaverage --hemi ${HEMISPHERE} --fwhm ${FSAVERAGE_OUTPUT_SMOOTHING} --out ${OUTPUT_FSAVG_FILE} --meas ${INPUT_CURVATURE_FILE} --area ${SURFACE}
+                        if [ $? -ne 0 ]; then
+                            echo "$APPTAG ERROR: Mapping data of principal curvature ${PRINCIPAL_CURVATURE} for hemisphere ${HEMISPHERE} to fsaverage failed for subject '$SUBJECT'."
+                            NUM_FAIL_MAP_TO_FSAVG=$((NUM_FAIL_MAP_TO_FSAVG + 1))
+                            FAILED_MAP_TO_FSAVG_LIST="${FAILED_MAP_TO_FSAVG_LIST}:${SUBJECT}.${HEMISPHERE}.${PRINCIPAL_CURVATURE}"
+                        fi
+
                 done
-            done
-        fi
+            fi
+        done
 
     else
         NUM_FAIL=$((NUM_FAIL + 1))

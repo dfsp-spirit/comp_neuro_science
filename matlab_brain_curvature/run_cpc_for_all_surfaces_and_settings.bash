@@ -2,7 +2,7 @@
 ## Run this script, it will execute the 'compute_principal_curvature.bash' script with different settings. (There is no need to manually run the 'compute_principal_curvature.bash' script.) To use this:
 # 1) Put this script and the other one somewhere, e.g., into ~/scripts/, and make them executable (chmod +x <file>)
 # 2) Adapt the path to the  'compute_principal_curvature.bash' script in the setting CPC_SCRIPT below.
-# 3) Change into your SUBJECTS_DIR that contains the data and the subjects file (subject_analysis.txt, or change setting SUBJECTS_FILE below) and run this script from there, without any options. For example, if you copied the 2 scripts into ~/scripts/ and your subjects dir is ~/data/my_study, do:
+# 3) Change into your SUBJECTS_DIR that contains the data and the subjects file (subject_analysis.txt, or change setting SUBJECTS_FILE below) and set SUBJECTS_DIR to that dir. Also make sure the directory contains a copy of fsaverage. Run this script from there, without any options. For example, if you copied the 2 scripts into ~/scripts/ and your subjects dir is ~/data/my_study, do:
 #      cd ~/data/my_study
 #      ~/scripts/run_cpc_for_all_surfaces_and_settings.bash
 # That's it. This should take some time if you have many subjects. Optionally, you can supply a subjects file as first command line argument.
@@ -41,8 +41,8 @@ SURFACES="pial white"
 AVERAGINGS="10"
 #AVERAGINGS="0 1 2 3 4 5 10 15 20"
 
-NUM_SURF=$(echo "$SURFACES" | wc -w)
-NUM_AVG=$(echo "$AVERAGINGS" | wc -w)
+NUM_SURF=$(echo "$SURFACES" | wc -w | tr -d '[:space:]')
+NUM_AVG=$(echo "$AVERAGINGS" | wc -w | tr -d '[:space:]')
 
 echo "$APPTAG Running for $NUM_SURF surfaces: $SURFACES"
 echo "$APPTAG Running for $NUM_AVG averagings: $AVERAGINGS"
