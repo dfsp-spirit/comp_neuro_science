@@ -16,9 +16,9 @@ rh_data_file = fullfile(char(subject_surf_dir), char(rh_data_filename));
 
 measure_data = 0;
 
-if hemi == 'lh' || hemi == 'both'
+if strcmp(hemi, 'lh') || strcmp(hemi, 'both')
     if exist(lh_data_file, 'file') ~= 2
-        fprintf("ERROR: lh data file '%s' does not exist. Check the path.\n", lh_data_file);
+        error("The lh data file '%s' does not exist. Check the path.\n", lh_data_file);
     else
         measure_data_lh = read_curv(lh_data_file);
         if hemi == 'lh'
@@ -27,9 +27,9 @@ if hemi == 'lh' || hemi == 'both'
     end
 end
 
-if hemi == 'rh' || hemi == 'both'
+if strcmp(hemi, 'rh') || strcmp(hemi, 'both')
     if exist(rh_data_file, 'file') ~= 2
-        fprintf("ERROR: rh data file '%s' does not exist. Check the path.\n", rh_data_file);
+        error("The rh data file '%s' does not exist. Check the path.\n", rh_data_file);
     else
         measure_data_rh = read_curv(rh_data_file);
         if hemi == 'rh'
@@ -38,7 +38,7 @@ if hemi == 'rh' || hemi == 'both'
     end
 end
 
-if hemi == 'both'
+if strcmp(hemi, 'both')
     measure_data = vertcat(measure_data_lh, measure_data_rh)';
 end
 
