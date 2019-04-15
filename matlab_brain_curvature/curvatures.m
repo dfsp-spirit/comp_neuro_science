@@ -86,7 +86,7 @@ descriptor_to_plot = gaussian_curvature;
 
 plot_title = descriptor_to_plot.name;
 plot_range = descriptor_to_plot.suggested_plot_range;
-%plot_range = [-0.4, 0.3];
+plot_range = [-0.15, 0.15];
 % Note: If you want to try a custom plot range, it helps to look at the histogram of the curv_values:
 %histogram(descriptor_to_plot.data)
 
@@ -109,9 +109,29 @@ colormap_binary = [1 1 0
     0 0 1
     ];
 
+% red green
+colormap_binary_rg = [1 0 0
+    0 1 0
+    ];
+
 
 SurfStatView(descriptor_to_plot.data, display_surface, plot_title);
 SurfStatColormap('jet');
 %SurfStatColormap(colormap_blue_orange);
 %SurfStatColormap(colormap_binary);
 SurfStatColLim(plot_range);
+export_fig_filename = sprintf("%s_full.png", descriptor_to_plot.short_name);
+SurfStatSaveFig(export_fig_filename, 'o');
+fprintf("Current directory is: %s\n", pwd);
+fprintf("Saved figure to '%s'.\n", export_fig_filename);
+
+% Plot the negative versus positive curvature
+d = sign(descriptor_to_plot.data);
+d(d==0) = -1; % assign the 0 curvature values to one of the other 2 values, to avoid a 3rd color in the plot
+SurfStatView(d, display_surface, 'pos vs neg');
+SurfStatColormap(colormap_binary_rg);
+export_fig_filename = sprintf("%s_binarized.png", descriptor_to_plot.short_name);
+SurfStatSaveFig(export_fig_filename, 'o');
+fprintf("Saved figure to '%s'.\n", export_fig_filename);
+
+
