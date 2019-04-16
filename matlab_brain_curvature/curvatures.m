@@ -7,15 +7,15 @@ clc;
 clear;
 
 %% Settings - you will have to adapt them to your needs.
-subjects_dir = '/Users/timschaefer/data/tim_only/005_edits_fs/';    % The directory the Freesurfer environment variable $SUBJECTS_DIR points to, i.e., the directory containing the data for all your subjects. This can be any directory, just make sure the concatinated path that results in the end points to your data.
+subjects_dir = '/Users/timschaefer/data/tim_only/';    % The directory the Freesurfer environment variable $SUBJECTS_DIR points to, i.e., the directory containing the data for all your subjects. This can be any directory, just make sure the concatinated path that results in the end points to your data.
 %subjects_dir = '/home/spirit/data/tim_only/005_edits_fs/';
 
 subject_surf_dir = strcat(subjects_dir,'tim/surf/');    % The relative path to the surface data of the example subject you want to use. Here, 'tim' is the subject id, and 'surf' is the default folder used by Freesurfer to store computed surface data for a subject.
 
 % Note: If you do not have MRI data or mris_curvature output yet and just want to test this script, you can check for example data in the directory 'example_data' of this repo. Just modify subject_surf_dir to point to that directory. Data for the 'pial' and 'white' surfaces can be found in the directory.
-measured_surface = 'white';       % The surface for which you have measured curvature data from an mris_curvature run (see below). If you used ?h.pial, set this to 'pial' and this script will try to read the measured data from ?h.pial.max and ?h.pial.min. These output files are expected to be in 'subject_surf_dir' for your subject.
+measured_surface = 'pial';       % The surface for which you have measured curvature data from an mris_curvature run (see below). If you used ?h.pial, set this to 'pial' and this script will try to read the measured data from ?h.pial.max and ?h.pial.min. These output files are expected to be in 'subject_surf_dir' for your subject.
 %display_on_surface = 'inflated'; % The surface on which the data should be plotted. You can use the same surface you measured, but it is often better to use 'inflated' to see the values in deep sulci.
-display_on_surface = 'white';
+display_on_surface = 'pial';
 
 % End of settings. But make sure you set the descriptor you want to plot
 % below, it is in the variable 'descriptor_to_plot'.
@@ -83,10 +83,11 @@ sk2sk = curv_calculator.sk2sk();
 
 %...but we only use/plot one of them. Make your choice:
 descriptor_to_plot = gaussian_curvature;
+%descriptor_to_plot = mean_curvature;
 
 plot_title = descriptor_to_plot.name;
 plot_range = descriptor_to_plot.suggested_plot_range;
-plot_range = [-0.15, 0.15];
+%plot_range = [-0.15, 0.15];
 % Note: If you want to try a custom plot range, it helps to look at the histogram of the curv_values:
 %histogram(descriptor_to_plot.data)
 
@@ -114,13 +115,18 @@ colormap_binary_rg = [1 0 0
     0 1 0
     ];
 
+colormap_tri_rgg = [1 0 0
+    0.5 0.5 0.5
+    0 1 0
+    ];
+
 
 SurfStatView(descriptor_to_plot.data, display_surface, plot_title);
 SurfStatColormap('jet');
 %SurfStatColormap(colormap_blue_orange);
 %SurfStatColormap(colormap_binary);
 SurfStatColLim(plot_range);
-export_fig_filename = sprintf("%s_full.png", descriptor_to_plot.short_name);
+export_fig_filename = sprintf("%s_of_%s_on_%s_full.png", descriptor_to_plot.short_name, measured_surface, display_on_surface);
 SurfStatSaveFig(export_fig_filename, 'o');
 fprintf("Current directory is: %s\n", pwd);
 fprintf("Saved figure to '%s'.\n", export_fig_filename);
@@ -128,10 +134,28 @@ fprintf("Saved figure to '%s'.\n", export_fig_filename);
 % Plot the negative versus positive curvature
 d = sign(descriptor_to_plot.data);
 d(d==0) = -1; % assign the 0 curvature values to one of the other 2 values, to avoid a 3rd color in the plot
-SurfStatView(d, display_surface, 'pos vs neg');
+SurfStatView(d, display_surface, 'pos vs. neg');
 SurfStatColormap(colormap_binary_rg);
-export_fig_filename = sprintf("%s_binarized.png", descriptor_to_plot.short_name);
+export_fig_filename = sprintf("%s_of_%s_on_%s_binarized.png", descriptor_to_plot.short_name, measured_surface, display_on_surface);
 SurfStatSaveFig(export_fig_filename, 'o');
 fprintf("Saved figure to '%s'.\n", export_fig_filename);
 
+% Plot the negative versus positive versus zero curvature
+
+if strcmp(descriptor_to_plot.short_name, "gaussian_curvature")
+    threshold_consider_curv_zero = 0.001;    % Curvature values smaller than this threshold will be plotted as zero
+elseif strcmp(descriptor_to_plot.short_name, "mean_curvature")
+    threshold_consider_curv_zero = 0.05;
+else
+    threshold_consider_curv_zero = 0.0;
+end
+
+dn = descriptor_to_plot.data;
+dn(abs(dn)<threshold_consider_curv_zero) = 0;
+dn = sign(dn);
+SurfStatView(dn, display_surface, 'pos vs. neg vs. zero');
+SurfStatColormap(colormap_tri_rgg);
+export_fig_filename = sprintf("%s_of_%s_on_%s_tri.png", descriptor_to_plot.short_name, measured_surface, display_on_surface);
+SurfStatSaveFig(export_fig_filename, 'o');
+fprintf("Saved figure to '%s'.\n", export_fig_filename);
 
