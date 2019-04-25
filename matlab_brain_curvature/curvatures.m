@@ -9,13 +9,16 @@ clear;
 %% Settings - you will have to adapt them to your needs.
 subjects_dir = '/Users/timschaefer/data/tim_only/';    % The directory the Freesurfer environment variable $SUBJECTS_DIR points to, i.e., the directory containing the data for all your subjects. This can be any directory, just make sure the concatinated path that results in the end points to your data.
 %subjects_dir = '/home/spirit/data/tim_only/005_edits_fs/';
+setenv('SUBJECTS_DIR', subjects_dir);       % required for some Freesurfer matlab functions, e.g., read_label
 
-subject_surf_dir = strcat(subjects_dir,'tim/surf/');    % The relative path to the surface data of the example subject you want to use. Here, 'tim' is the subject id, and 'surf' is the default folder used by Freesurfer to store computed surface data for a subject.
+subject_id = "tim";
+
+subject_surf_dir = sprintf("%s/%s/%s", subjects_dir, subject_id, "surf/");    % The relative path to the surface data of the example subject you want to use. Here, 'tim' is the subject id, and 'surf' is the default folder used by Freesurfer to store computed surface data for a subject.
 
 % Note: If you do not have MRI data or mris_curvature output yet and just want to test this script, you can check for example data in the directory 'example_data' of this repo. Just modify subject_surf_dir to point to that directory. Data for the 'pial' and 'white' surfaces can be found in the directory.
 measured_surface = 'pial';       % The surface for which you have measured curvature data from an mris_curvature run (see below). If you used ?h.pial, set this to 'pial' and this script will try to read the measured data from ?h.pial.max and ?h.pial.min. These output files are expected to be in 'subject_surf_dir' for your subject.
 %display_on_surface = 'inflated'; % The surface on which the data should be plotted. You can use the same surface you measured, but it is often better to use 'inflated' to see the values in deep sulci.
-display_on_surface = 'pial';
+display_on_surface = 'inflated';
 
 % End of settings. But make sure you set the descriptor you want to plot
 % below, it is in the variable 'descriptor_to_plot'.
@@ -24,11 +27,31 @@ display_on_surface = 'pial';
 % Note that you must generate the curvature files for k1 and k2 from a surface using mris_curvature in the system shell, see https://surfer.nmr.mgh.harvard.edu/fswiki/mris_curvature
 % Example: mris_curvature -min -max -a 3 rh.pial && mris_curvature -min -max -a 3 lh.pial
 
+dir_here = pwd;
+
 cd(subject_surf_dir);
 k2_rh = read_curv(strcat('rh.', measured_surface, '.min'));
 k1_rh = read_curv(strcat('rh.', measured_surface, '.max'));
 k2_lh = read_curv(strcat('lh.', measured_surface, '.min'));
 k1_lh = read_curv(strcat('lh.', measured_surface, '.max'));
+
+% Read cortex mask. This is only needed to mask vertices along the medial
+% wall.
+num_verts_lh = length(k1_lh);
+label_file_name_lh = "lh.cortex"; % The 'read_label' function will append '.label' to this.
+lh_cortex_label = read_label(subject_id, label_file_name_lh); % This works based on $SUBJECTS_DIR
+lh_cortex_mask = label_to_mask(lh_cortex_label, num_verts_lh);
+num_verts_rh = length(k1_rh);
+label_file_name_rh = "rh.cortex"; % The 'read_label' function will append '.label' to this.
+rh_cortex_label = read_label(subject_id, label_file_name_rh); % This works based on $SUBJECTS_DIR
+rh_cortex_mask = label_to_mask(rh_cortex_label, num_verts_rh);
+
+% Apply mask
+k1_lh = k1_lh .* lh_cortex_mask;
+k2_lh = k2_lh .* lh_cortex_mask;
+k1_rh = k1_rh .* rh_cortex_mask;
+k2_rh = k2_rh .* rh_cortex_mask;
+
 
 
 %% Generate data and compute surface descriptors
@@ -38,7 +61,7 @@ k2 = vertcat(k2_lh, k2_rh);
 % The k1 and k2 values we receive from Freesurfer/mris_curvature are
 % determined by ordering the absolute values of the principal curvatures
 % (and assigning the larger one to k1 and the smaller one to k2, see the
-% source code of mris_curvature for details). This means they use the 
+% source code of mris_curvature for details). This means they use the
 % following definition for k1, k2:
 %      abs(k1) >= abs(k2)
 % An alternate definition used in other sources is:
@@ -52,6 +75,14 @@ k2 = vertcat(k2_lh, k2_rh);
 % http://brainvis.wustl.edu/wiki/index.php/Folding/Measurements for a full
 % list. Feel free to come up with and implement some more.
 
+setting_do_threshold = 1;
+if setting_do_threshold == 1
+    fprintf("Thresholding k1 and k2 to remove outliers.\n");
+    k1(k1 < -1.5) = 0;
+    k1(k1 > 1.0) = 0;    
+    k2(k2 < -0.1) = 0;
+    k1(k1 > 0.1) = 0;
+end
 
 curv_calculator = CurvatureDescriptors(k1, k2);
 
@@ -82,8 +113,8 @@ sh2sh = curv_calculator.sh2sh();
 sk2sk = curv_calculator.sk2sk();
 
 %...but we only use/plot one of them. Make your choice:
+%descriptor_to_plot = gaussian_curvature;
 descriptor_to_plot = gaussian_curvature;
-%descriptor_to_plot = mean_curvature;
 
 plot_title = descriptor_to_plot.name;
 plot_range = descriptor_to_plot.suggested_plot_range;
@@ -98,7 +129,10 @@ disp(descriptor_stats);
 %% Display the data on a surface. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
 %display_surf_dir = subjects_dir + 'fsaverage/surf';g
 display_surf_dir = subject_surf_dir;     % We use the surface of the subject itself in this demo case, since the data only consists of this single subject. You would usually plot on fsaverage for group comparison.
-display_surface = SurfStatReadSurf ( {strcat(display_surf_dir, strcat('lh.', display_on_surface)), strcat(display_surf_dir, strcat('rh.', display_on_surface))} );
+lh_display_surf_file = strcat(display_surf_dir, strcat('lh.', display_on_surface));
+rh_display_surf_file = strcat(display_surf_dir, strcat('rh.', display_on_surface));
+fprintf("Loading display surf files: '%s' and '%s'.\n", lh_display_surf_file, rh_display_surf_file);
+display_surface = SurfStatReadSurf ( {lh_display_surf_file, rh_display_surf_file} );
 
 colormap_blue_orange = [0 1 1
     0 0 1
@@ -120,7 +154,9 @@ colormap_tri_rgg = [1 0 0
     0 1 0
     ];
 
+cd(dir_here); % Ensure images are saved in script dir (not in subjects dir!)
 
+SurfStatColormap('jet');
 SurfStatView(descriptor_to_plot.data, display_surface, plot_title);
 SurfStatColormap('jet');
 %SurfStatColormap(colormap_blue_orange);
