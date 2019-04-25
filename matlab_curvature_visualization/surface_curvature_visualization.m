@@ -25,6 +25,12 @@ title("Mean curvature");
 figure;surf(X,Y,Z,K);
 title("Gaussian curvature");
 
+% Test curvature computation on a sphere. This leads to artefacts.
+%[xs, ys, zs] = sphere();
+%[Hs, Ks] = get_curvatures(xs, ys, zs);
+%figure;surf(xs,ys,zs,Ks);
+
+
 % Function by Ahmed Elnaggar, https://www.mathworks.com/matlabcentral/fileexchange/5229-gaussian-curvature
 function [H, K] = get_curvatures(X,Y,Z)
 [Xu,Xv] = gradient(X); [Yu,Yv] = gradient(Y); [Zu,Zv] = gradient(Z);
