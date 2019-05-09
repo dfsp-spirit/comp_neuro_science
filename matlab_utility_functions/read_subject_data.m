@@ -21,7 +21,7 @@ if strcmp(hemi, 'lh') || strcmp(hemi, 'both')
         error("The lh data file '%s' does not exist. Check the path.\n", lh_data_file);
     else
         measure_data_lh = read_curv(lh_data_file);
-        if hemi == 'lh'
+        if strcmp(hemi, 'lh')
             measure_data = measure_data_lh;
         end
     end
@@ -32,7 +32,7 @@ if strcmp(hemi, 'rh') || strcmp(hemi, 'both')
         error("The rh data file '%s' does not exist. Check the path.\n", rh_data_file);
     else
         measure_data_rh = read_curv(rh_data_file);
-        if hemi == 'rh'
+        if strcmp(hemi, 'rh')
             measure_data = measure_data_rh;
         end
     end
