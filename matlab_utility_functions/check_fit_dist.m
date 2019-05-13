@@ -12,7 +12,7 @@ AIC=-2*(-NLL)+2*k;
 AICc=(AIC)+((2*k*(k+1))/(n-k-1));
 
 figure;
-num_bins = 10;
+num_bins = 20;
 histfit(data, num_bins, distname);
 title(sprintf("Fit of %s dist against data", distname));
 
