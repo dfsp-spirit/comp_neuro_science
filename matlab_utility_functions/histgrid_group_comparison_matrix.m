@@ -25,19 +25,19 @@ for active_plot_idx = 1:num_subplots
     if method == 1
         histogram(data_group1, 'Normalization','probability');
         hold on;  % Draw line at mean
-        line([mean(data_group1), mean(data_group1)], ylim, 'LineWidth', 1, 'Color', 'r');
+        line([mean(data_group1), mean(data_group1)], ylim, 'LineWidth', 1, 'Color', 'b');
         histogram(data_matrix_group2(:,active_plot_idx), 'Normalization', 'probability');
-        line([mean(data_group2), mean(data_group2)], ylim, 'LineWidth', 1, 'Color', 'g');
+        line([mean(data_group2), mean(data_group2)], ylim, 'LineWidth', 1, 'Color', 'r');
         hold off;
     elseif method == 2
         nBins = 10;
         all_data = horzcat(data_group1, data_group2);
         [~ , bins] = hist(all_data, nBins); % Compute bin borders for all data
         histogram(data_group1, bins); % force same bins for data1...
-        line([mean(data_group1), mean(data_group1)], ylim, 'LineWidth', 1, 'Color', 'r');
+        line([mean(data_group1), mean(data_group1)], ylim, 'LineWidth', 1, 'Color', 'b');
         hold on;
         histogram(data_group2, bins);   % ...and data2.
-        line([mean(data_group2), mean(data_group2)], ylim, 'LineWidth', 1, 'Color', 'g');
+        line([mean(data_group2), mean(data_group2)], ylim, 'LineWidth', 1, 'Color', 'r');
         hold off;
     end
     if add_subplot_titles == 1
