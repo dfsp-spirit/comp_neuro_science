@@ -8,12 +8,15 @@ Here is a screenshot of the results:
 
 ![Desikan](./desikan_surfstat.png?raw=true "Visualization of Desikan atlas parcellation for an example subject.")
 
-
 ## Requirements
 
-To run this, you need the Matlab and the following 2 (free) toolboxes:
+To run this, you need Matlab and the following 2 (free) toolboxes:
 
 - the FreeSurfer matlab functions (https://surfer.nmr.mgh.harvard.edu/, they come with FreeSurfer and can be found in $FREESURFER_HOME/matlab/ after installation)
 - SurfStat by Keith Worsley (http://www.math.mcgill.ca/keith/surfstat/)
 
 Note that you also need the helper function from this dir, `plot_data_onto_subject.m`, on your matlab path.
+
+## TODO
+
+The mapping of colors to regions is not the one used by FreeSurfer yet.
