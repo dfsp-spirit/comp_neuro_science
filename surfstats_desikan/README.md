@@ -1,4 +1,4 @@
-= Demo: Visualization of FreeSurfer surface annotations in Matlab using SurfStat =
+# Demo: Visualization of FreeSurfer surface annotations in Matlab using SurfStat
 
 This directory contains a Matlab script that illustrates howto load a FreeSurfer annotation file in SurfStat and display the results on the surface of a subject.
 
@@ -7,3 +7,11 @@ The example uses the Desikan parcellation of the subjects surface (which is gene
 Here is a screenshot of the results:
 
 ![Desikan](./desikan_surfstat.png?raw=true "Visualization of Desikan atlas parcellation for an example subject.")
+
+
+## Requirements
+
+To run this, you need the Matlab and the following 2 (free) toolboxes:
+
+- the FreeSurfer matlab functions (https://surfer.nmr.mgh.harvard.edu/, they come with FreeSurfer and can be found in $FREESURFER_HOME/matlab/ after installation)
+- SurfStat by Keith Worsley (http://www.math.mcgill.ca/keith/surfstat/)
