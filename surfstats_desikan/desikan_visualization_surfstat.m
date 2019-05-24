@@ -9,18 +9,15 @@ aparc_file_rh = fullfile(subjects_dir, subject_id, 'label', "rh.aparc.annot");
 
 
 
-[~,idx] = sort(colortable_lh.table(:,5)); % sort based on 5th column
-sortedmat = colortable_lh.table(idx,:);
+[~,idx] = sort(colortable_lh.table(:, 5)); % sort based on 5th column
+sortedmat = colortable_lh.table(idx, :);
 
 num_regions = size(sortedmat, 1);
-
-sortedmat(:,6) = 1:num_regions;
 colmap = sortedmat(:, 1:3) ./ 255;   % RGB color values are columns 1:3. They are in range 0:255 though, and we need 0:1.
 
 
 % The values are the codes so far. Map them to 1..36 instead.
 for vidx = 1:num_regions
-    code_val = sortedmat(vidx, 5);
     data_lh(data_lh==sortedmat(vidx, 5)) = vidx;
     data_rh(data_rh==sortedmat(vidx, 5)) = vidx;
 end
