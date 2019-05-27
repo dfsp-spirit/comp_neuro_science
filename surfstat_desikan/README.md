@@ -17,6 +17,8 @@ To run this, you need Matlab and the following 2 (free) toolboxes:
 
 Note that you also need the helper function from this dir, `plot_data_onto_subject.m`, on your matlab path.
 
+You may want to replace the data used in the script with the `bert` example subject that comes with FreeSurfer (in `$FREESURFER_HOME/subjects/bert/`).
+
 ## TODO
 
 The mapping of colors to regions is not the one used by FreeSurfer yet.
