@@ -5,8 +5,8 @@ x = -1:0.1:1;y = x;
 [X,Y] = meshgrid(x,y);
 
 % Define surface shape using k1 and k2
-k1 = 0;
-k2 = 2;
+k1 = -1;
+k2 = 1;
 
 % Set Z value of grid
 Z = 0.5*(k1*X.^2 + k2*Y.^2);
