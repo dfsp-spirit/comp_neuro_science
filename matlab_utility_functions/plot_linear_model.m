@@ -1,4 +1,5 @@
-function fh = plot_linear_model(mdl)
+function fh = plot_linear_model(mdl, plot_title)
+% Plot full diagnostics plot for a linear model (8 subplots)
 
 % print Model overview
 fprintf("===Model overview===\n");
@@ -50,7 +51,14 @@ subplot(dimx, dimy, 8);
 plotInteraction(mdl,'group','age');
 title("Interaction of group with age");
 
-fprintf("Plotting LM overview done.\n");
+check_result = exist('sgtitle', 'file');
+if check_result == 6     % see docs on `exist`
+    if strlength(plot_title) > 0
+        sgtitle(plot_title, 'Interpreter', 'none'); % sgtitle requires bioinformatics toolbox and Matlab >= 2018b
+    end
+end
+
+fprintf("Overview done for model: %s.\n", plot_title);
 
 fh = gcf;
 
