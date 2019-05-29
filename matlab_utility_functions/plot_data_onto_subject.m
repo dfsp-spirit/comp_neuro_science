@@ -5,9 +5,9 @@ function fig_handle = plot_data_onto_subject(subject_id, subjects_dir, data_lh, 
 %plot_title = sprintf("Subject '%s'", subject_id);
 plot_title = '';
 
-subject_surf_dir = fullfile(subjects_dir, subject_id, 'surf');
-lh_display_surf_file = fullfile(subject_surf_dir, strcat('lh.', surf));
-rh_display_surf_file = fullfile(subject_surf_dir, strcat('rh.', surf));
+subject_surf_dir = fullfile(char(subjects_dir), char(subject_id), 'surf');
+lh_display_surf_file = fullfile(char(subject_surf_dir), char(strcat('lh.', surf)));
+rh_display_surf_file = fullfile(char(subject_surf_dir), char(strcat('rh.', surf)));
 if exist(lh_display_surf_file, 'file') ~= 2
     error("lh surf file '%s' does not exist. Check the path.\n", lh_display_surf_file);
 end

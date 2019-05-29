@@ -30,8 +30,8 @@ function [fh, region_names] = plot_data_in_atlas_regions(data_to_plot, atlas, he
 % [fh, region_names] = plot_data_in_atlas_regions(1:72, "aparc", "both", "bert", "/Applications/freesurfer/subjects")
 
 
-    aparc_file_lh = fullfile(subjects_dir, subject_id, 'label', sprintf("lh.%s.annot", atlas));
-    aparc_file_rh = fullfile(subjects_dir, subject_id, 'label', sprintf("rh.%s.annot", atlas));
+    aparc_file_lh = fullfile(char(subjects_dir), char(subject_id), 'label', char(sprintf("lh.%s.annot", atlas)));
+    aparc_file_rh = fullfile(char(subjects_dir), char(subject_id), 'label', char(sprintf("rh.%s.annot", atlas)));
     
     
     if exist(aparc_file_lh, 'file') ~= 2
