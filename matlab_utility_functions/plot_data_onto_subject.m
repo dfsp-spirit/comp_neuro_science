@@ -2,8 +2,8 @@ function fig_handle = plot_data_onto_subject(subject_id, subjects_dir, data_lh, 
 %% Display the data on a surface. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
 
 
-plot_title = sprintf("Subject '%s'", subject_id);
-
+%plot_title = sprintf("Subject '%s'", subject_id);
+plot_title = '';
 
 subject_surf_dir = fullfile(subjects_dir, subject_id, 'surf');
 lh_display_surf_file = fullfile(subject_surf_dir, strcat('lh.', surf));

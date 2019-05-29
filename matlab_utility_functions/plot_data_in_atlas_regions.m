@@ -24,6 +24,10 @@ function [fh, region_names] = plot_data_in_atlas_regions(data_to_plot, atlas, he
 %
 % TODO: The function signature does not yet expose the colormap and brain surface
 % used in the visualization.
+%
+% Full usage example:
+%
+% [fh, region_names] = plot_data_in_atlas_regions(1:72, "aparc", "both", "bert", "/Applications/freesurfer/subjects")
 
 
     aparc_file_lh = fullfile(subjects_dir, subject_id, 'label', sprintf("lh.%s.annot", atlas));
