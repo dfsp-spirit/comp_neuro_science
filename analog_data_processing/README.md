@@ -1,13 +1,8 @@
-## Analog signal processing in Python 
+## Analog signal processing in Python
 
-As mentioned, this repo is not intended for the public. If you're lucky I left a `environment.yml` file in the base directory of the tool you are interested in. If so, you could install anaconda (see https://conda.io/docs/user-guide/install/) and then use that file to reproduce the required environment:
+These are just some code snippets which are more or less based or at least related to the book *Neural Data Science - A Primer with MATLAB and Python* by Erik Nylen and Pascal Wallisch.
 
-    conda env create -f environment.yml
 
-You should then see the new environment in your environments list, check `conda env list`. Make sure you activate the new environment (called `comp_neuro_science` here) before running the python script:
+E.g., the `sine_waves.py` script can be used to plot sine waves:
 
-    source activate comp_neuro_science
-    python some_script.py
-    source deactivate
-	
-If there is no `environment.yml` file, it's safe to assume that you will need at least numpy, scipy and mathplotlib. For everything else, you will have to check the imports in the script.
+![Desikan](./sine_waves_3_4_6.png?raw=true "Visualization of sine waves with different amplitutes, and the result of adding them up.")
