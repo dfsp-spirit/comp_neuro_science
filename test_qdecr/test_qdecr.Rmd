@@ -18,7 +18,7 @@ cat(sprintf("Using FreeSurfer installation at '%s'.\n", fsh))
 
 
 # This loads a demographics file in CSV format. Used for your GLM formula below.
-demographics <- read.csv(file="~/data/euaims_curvature/demographics_with_header.csv", header=TRUE, sep="\t")
+demographics <- read.csv(file="~/data/study1/demographics_with_header.csv", header=TRUE, sep="\t")
 
 # The dependent variable here tells qdec to load the thickness data for each subject. The independent variables are from the demographics file.
 out <- qdecr_fastlm(qdecr_area ~ group + age + site + tbv,
@@ -26,7 +26,7 @@ out <- qdecr_fastlm(qdecr_area ~ group + age + site + tbv,
   id = "id",
   hemi = "lh",
   n_cores = 2,
-  project = "aims_thickness",
+  project = "study1_area",
   clobber = TRUE,
   dir_tmp = "/dev/shm")
 
