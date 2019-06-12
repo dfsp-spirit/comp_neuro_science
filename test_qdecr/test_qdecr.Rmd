@@ -1,22 +1,54 @@
-# Tests the qdecr package for vertex-wise statistics (see qdecr.com)
+# Tests the qdecr package for vertex-wise statistics (see qdecr.com) on some data
+#
+# This is a simple R script that uses qdecr to perform vertex-wise analysis of structural neuroimaging data.
+#
+# The script checks for differences in cortical thickness in a dataset containing ASD patients and neurotypical controls.
+#
+# This is mostly copy and pasted from the documentation of qdecr
 
 library(QDECR)
 
 
+# These paths should be set in your shell. We print them here to remind the user of his current setup.
+
 fsh = Sys.getenv("FREESURFER_HOME")
 sjd = Sys.getenv("SUBJECTS_DIR")
-
 cat(sprintf("Running qdecr on data in '%s'.\n", sjd))
 cat(sprintf("Using FreeSurfer installation at '%s'.\n", fsh))
 
 
-
+# This loads a demographics file in CSV format. Used for your GLM formula below.
 demographics <- read.csv(file="~/data/euaims_curvature/demographics_with_header.csv", header=TRUE, sep="\t")
 
-out <- qdecr_fastlm(qdecr_thickness ~ group + age + site + tbv,
+# The dependent variable here tells qdec to load the thickness data for each subject. The independent variables are from the demographics file.
+out <- qdecr_fastlm(qdecr_area ~ group + age + site + tbv,
   data = demographics,
   id = "id",
   hemi = "lh",
+  n_cores = 2,
   project = "aims_thickness",
   clobber = TRUE,
   dir_tmp = "/dev/shm")
+
+
+# Output analysis
+cat(sprintf("Analysis done for data in dir '%s'.\n", sjd))
+
+hist(out) # per vertex
+hist(out, qtype = "subject") # per subject
+
+## Overview of all significant clusters
+summary(out)
+summary(out, annot = TRUE) # also provides info on which regions the clusters fall into
+
+## view the stack/contrast names
+stacks(out)
+
+# Visualization
+cat(sprintf("Generating visualization...\n"))
+
+## Obtain a Freeview plot for a specific stack/contrast (note: this function requires the `magick` package)
+#qdecr_snap(out, 2)
+qdecr_snap(out, 'age') #same output
+
+cat(sprintf("All done, exiting.\n"))
