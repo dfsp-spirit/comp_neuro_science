@@ -1,0 +1,22 @@
+# Tests the qdecr package for vertex-wise statistics (see qdecr.com)
+
+library(QDECR)
+
+
+fsh = Sys.getenv("FREESURFER_HOME")
+sjd = Sys.getenv("SUBJECTS_DIR")
+
+cat(sprintf("Running qdecr on data in '%s'.\n", sjd))
+cat(sprintf("Using FreeSurfer installation at '%s'.\n", fsh))
+
+
+
+demographics <- read.csv(file="~/data/euaims_curvature/demographics_with_header.csv", header=TRUE, sep="\t")
+
+out <- qdecr_fastlm(qdecr_thickness ~ group + age + site + tbv,
+  data = demographics,
+  id = "id",
+  hemi = "lh",
+  project = "aims_thickness",
+  clobber = TRUE,
+  dir_tmp = "/dev/shm")
