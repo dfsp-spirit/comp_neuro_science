@@ -72,7 +72,7 @@ fi
 BASEDIR=$(pwd)
 
 
-SUBJECT_SURF_DIR="${SUBJECT_ID}/surf"
+SUBJECT_SURF_DIR="${SUBJECT}/surf"
 if [ -d "$SUBJECT_SURF_DIR" ]; then
 
     cd "$SUBJECT_SURF_DIR"
