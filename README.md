@@ -18,12 +18,16 @@ Now add ~/matlab/comp_neuro_science/matlab_utility_functions/ to your Matlab pat
 * In the Matlab GUI: Select the **Home** tab in the upper left, then click **Set Path** in the top ribbon. In the resulting dialog, click **Add Folder** and select the directory in the file browser.
 * From within a script:
 
-    addpath('~/matlab/comp_neuro_science/matlab_utility_functions/')
+    ```addpath('~/matlab/comp_neuro_science/matlab_utility_functions/')```
 
+Should it happen again in the future, just do this to get any new utility functions I added in the meantime:
+
+    cd ~/matlab/
+    git pull
 
 ## Dependency hell
 
 Note that you will also need our standard Matlab packages, as my scripts use functions from them as well: 
 
-* The Freesurfer matlab functions (in $FREESURFER_HOME/matlab/)
-* Surfstat by Keith Worsley
+* The Freesurfer Matlab functions (in $FREESURFER_HOME/matlab/)
+* [Surfstat](https://galton.uchicago.edu/faculty/InMemoriam/worsley/research/surfstat/) by Keith Worsley
