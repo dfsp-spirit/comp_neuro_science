@@ -25,7 +25,7 @@ Should it happen again in the future, just do this to get any new utility functi
     cd ~/matlab/
     git pull
 
-## Dependency hell
+### Dependency hell
 
 Note that you will also need our standard Matlab packages, as my scripts use functions from them as well: 
 
