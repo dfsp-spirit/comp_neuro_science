@@ -19,25 +19,13 @@ Should it happen again in the future, just do the following to get any new utili
     cd ~/matlab/
     git pull
 
-## Dependency hell
+## Requirements / Dependency hell
 
 Note that you will also need our standard Matlab packages, as my scripts use functions from them as well:
 
 * The Freesurfer Matlab functions (in $FREESURFER_HOME/matlab/): for loading Freesurfer format files
 * [Surfstat](https://galton.uchicago.edu/faculty/InMemoriam/worsley/research/surfstat/) by Keith Worsley: for visualization and modeling
 
-
-# niplot -- Matlab neuroimaging utility functions to display neuroimaging morphometry data on brain meshes
-
-These are some Matlab utility function for neuroimaging. They implement a simple high-level interface to some SurfStat functions, e.g., they allow you to plot some measure onto a brain surface in a single line of Matlab code.
-
-## Requirements
-
-These functions require Matlab, and the SurfStat package on your Matlab path.
-
-## Installation
-
-Put all of them into a directory and add that directory to your matlab path. A typical path would be ~/matlab/toolboxes/niplot
 
 
 ## Example Workflow: load standard space area data for a list of subjects and plot it for one of them
