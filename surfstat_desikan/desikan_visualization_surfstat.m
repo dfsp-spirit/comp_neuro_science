@@ -1,9 +1,11 @@
+% Feel free to replace this with your data, or use the 'bert' example subject that comes with FreeSurfer in $FREESURFER_HOME/subjects/bert/.
 subjects_dir = '~/data/tim_only/';
 subject_id = 'tim';
 
 aparc_file_lh = fullfile(subjects_dir, subject_id, 'label', "lh.aparc.annot");
 aparc_file_rh = fullfile(subjects_dir, subject_id, 'label', "rh.aparc.annot");
 
+% Note: read_annotation is a Matlab function that comes with FreeSurfer in $FREESURFER_HOME/matlab/.
 [vertices_lh, data_lh, colortable_lh] = read_annotation(aparc_file_lh);
 [vertices_rh, data_rh, colortable_rh] = read_annotation(aparc_file_rh);
 
