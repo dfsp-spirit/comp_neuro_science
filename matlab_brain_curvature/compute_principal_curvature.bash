@@ -2,6 +2,9 @@
 ## compute_principal_curvature.bash -- use the mris_curvature tool from FreeSurfer to compute the principal curvatures k1 and k2 for all vertices of the brains of all subjects in the subjects file.
 ## This script writes the curvature data into files in the $SUBJECTS_DIR/<subject_id>/surf/ directory, so you need write access to the $SUBJECTS_DIR to run it.
 ## Written by Tim Schäfer, 2018-07-30
+#
+#
+# Updated 2019-07-01
 
 ##### Settings -- you can adapt these to your needs. #####
 
@@ -10,7 +13,7 @@ MRIS_CURVATURE_BINARY=$(which mris_curvature)
 
 #W The command line options passed to mris_curvature. (The input surface file and the options to compute the principal curvatures get added automatically, so do not add it here.)
 ## Note that there is no need to edit this in this script, you can also use the <mc_opt> command line argument to change this.
-MRIS_CURVATURE_OPTIONS="-a 10"
+MRIS_CURVATURE_OPTIONS="-a 5"
 
 ## whether to map the results to fsaverage (standard space) from subject space
 DO_RUN_MRIS_CURVATURE="YES"
@@ -32,7 +35,7 @@ if [ -z "$1" -o -z "$2" ]; then
     echo "$APPTAG <subjectsfile>: the subjects file, must contain one subject identifier per line (each identifier must be a sub directory of SUBJECTS_DIR, like this: SUBJECTS_DIR/<subject>/)."
     echo "$APPTAG <surface>: the surface to use, e.g., 'pial'. The data for the surface must exist in SUBJECTS_DIR/<subject>/surf/."
     echo "$APPTAG <suffix>: optional unless you use <mc_opt>. If given, the principal curvature output files are renamed by appending <suffix> to the file names. Hint: use a suffix describing the mris_curvature options. Example: '.a15'"
-    echo "$APPTAG <mc_opt>: optional. Custom options to pass to mris_curvature. Must NOT include -min, -max, and the output file. You MUST quote this, e.g. '-a 15'. If omitted, defaults to '-a 10'."
+    echo "$APPTAG <mc_opt>: optional. Custom options to pass to mris_curvature. Must NOT include -min, -max, and the output file. You MUST quote this, e.g. '-a 15'. If omitted, defaults to '-a 5'."
     echo "$APPTAG Some example calls:"
     echo "$APPTAG  1) run for file subjects.txt, use pial surface, default averaging: '$0 subjects.txt pial'"
     echo "$APPTAG  2) run for file subs.txt, use white surface, average 15 times using custom options, label output files with suffix .a15: '$0 subs.txt white .a15 \"-a 15\"'"

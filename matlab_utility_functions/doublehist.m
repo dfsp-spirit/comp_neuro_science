@@ -10,8 +10,8 @@ hold on;
 histogram(data2, bins, 'normalization', 'pdf');   % ...and data2.
 title(plot_title);
 legend(legend_data1, legend_data2);
-hl1 = line([mean(data1), mean(data1)], ylim, 'LineWidth', 1, 'Color', 'b');
-hl2 = line([mean(data2), mean(data2)], ylim, 'LineWidth', 1, 'Color', 'r');
+hl1 = line([mean2(data1), mean2(data1)], ylim, 'LineWidth', 1, 'Color', 'b');
+hl2 = line([mean2(data2), mean2(data2)], ylim, 'LineWidth', 1, 'Color', 'r');
 
 % Use handles of lines to remove their entries from the legend
 set(get(get(hl1,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');

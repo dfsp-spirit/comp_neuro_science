@@ -75,11 +75,11 @@ k2 = vertcat(k2_lh, k2_rh);
 % http://brainvis.wustl.edu/wiki/index.php/Folding/Measurements for a full
 % list. Feel free to come up with and implement some more.
 
-setting_do_threshold = 1;
+setting_do_threshold = 0;
 if setting_do_threshold == 1
     fprintf("Thresholding k1 and k2 to remove outliers.\n");
     k1(k1 < -1.5) = 0;
-    k1(k1 > 1.0) = 0;    
+    k1(k1 > 1.0) = 0;
     k2(k2 < -0.1) = 0;
     k1(k1 > 0.1) = 0;
 end
@@ -114,7 +114,7 @@ sk2sk = curv_calculator.sk2sk();
 
 %...but we only use/plot one of them. Make your choice:
 %descriptor_to_plot = gaussian_curvature;
-descriptor_to_plot = gaussian_curvature;
+descriptor_to_plot = mean_curvature;
 
 plot_title = descriptor_to_plot.name;
 plot_range = descriptor_to_plot.suggested_plot_range;
@@ -127,7 +127,7 @@ descriptor_stats = sprintf('min=%.3f, max=%.3f, median=%.3f, mean=%.3f, skewness
 disp(descriptor_stats);
 
 %% Display the data on a surface. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
-%display_surf_dir = subjects_dir + 'fsaverage/surf';g
+%display_surf_dir = subjects_dir + 'fsaverage/surf';
 display_surf_dir = subject_surf_dir;     % We use the surface of the subject itself in this demo case, since the data only consists of this single subject. You would usually plot on fsaverage for group comparison.
 lh_display_surf_file = strcat(display_surf_dir, strcat('lh.', display_on_surface));
 rh_display_surf_file = strcat(display_surf_dir, strcat('rh.', display_on_surface));
@@ -194,4 +194,3 @@ SurfStatColormap(colormap_tri_rgg);
 export_fig_filename = sprintf("%s_of_%s_on_%s_tri.png", descriptor_to_plot.short_name, measured_surface, display_on_surface);
 SurfStatSaveFig(export_fig_filename, 'o');
 fprintf("Saved figure to '%s'.\n", export_fig_filename);
-

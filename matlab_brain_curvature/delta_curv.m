@@ -50,7 +50,7 @@ gaussian_curvature_pial = curv_calculator_pial.gaussian_curvature();
 delta_curv_meancurv = mean_curvature_white.data - mean_curvature_pial.data;
 delta_curv_gausscurv = gaussian_curvature_white.data - gaussian_curvature_pial.data; % Just for fun, this will look ugly
 
-descriptor_to_plot = delta_curv_meancurv;
+descriptor_to_plot = delta_curv_gausscurv;
 
 plot_title = "delta curv";
 plot_range = [-0.2, 0.2];

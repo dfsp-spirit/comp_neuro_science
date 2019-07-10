@@ -18,8 +18,8 @@ function [atlas_regions, mean_per_region] = get_measure_mean_per_atlas_region(su
     for region_idx = 1:length(atlas_regions)
         color_code_this_region = colortable.table(region_idx, 5);
         vert_indices = find(vertex_labels(vertex_labels == color_code_this_region));
-        mean_lgi_in_region = mean(measure_data(vert_indices));
-        mean_per_region(region_idx, 1) = mean_lgi_in_region;
+        mean_in_region = mean(measure_data(vert_indices));
+        mean_per_region(region_idx, 1) = mean_in_region;
     end
     
 end
