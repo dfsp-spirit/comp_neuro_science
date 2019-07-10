@@ -1,6 +1,7 @@
 function fig_handle = plot_data_onto_subject(subject_id, subjects_dir, data_lh, data_rh, colmap, surf)
 %% Display the data on a surface. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
 
+delete_colormap = 1;
 
 %plot_title = sprintf("Subject '%s'", subject_id);
 plot_title = '';
@@ -31,16 +32,16 @@ fig_handle = figure;
 SurfStatView(measure_data, display_surface, plot_title);
 SurfStatColormap(colmap);
 
-% Hack: delete the misplaced color bar (SurfStat bug)
-% a=get(gcf,'Children');
-% for i=1:length(a)
-%     tag=get(a(i),'Tag');
-%     if strcmp(tag,'Colorbar')
-%         title=get(get(a(i),'Title'),'String');
-%         delete(a(i));
-%     end
-% end
-
-%fig_handle = gcf;
+if delete_colormap
+  % Hack: delete the misplaced color bar (SurfStat bug)
+  a=get(gcf,'Children');
+  for i=1:length(a)
+     tag=get(a(i),'Tag');
+     if strcmp(tag,'Colorbar')
+         title=get(get(a(i),'Title'),'String');
+         delete(a(i));
+     end
+  end
+end
 
 end
