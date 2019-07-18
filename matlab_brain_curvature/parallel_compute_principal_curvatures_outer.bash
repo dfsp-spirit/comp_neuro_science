@@ -100,5 +100,5 @@ if [ ! -x "${CARGO_SCRIPT}" ]; then
 fi
 
 ############ execution, no need to mess with this. ############
-
-echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_CONSECUTIVE_JOBS} --workdir . --joblog LOGFILE_CURV_PARALLEL.txt "$CARGO_SCRIPT {} $SURFACE"
+DATE_TAG=$(date '+%Y-%m-%d_%H-%M-%S')
+echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_CONSECUTIVE_JOBS} --workdir . --joblog LOGFILE_CURV_PARALLEL_${DATE_TAG}.txt "$CARGO_SCRIPT {} $SURFACE .a5 \"-a 5\""

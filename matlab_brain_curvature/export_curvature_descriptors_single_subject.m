@@ -6,9 +6,10 @@ function res = export_curvature_descriptors_single_subject(subject_id, subjects_
 % - If you want to create surfstat plots (see create_surfstat_plots setting), you need SurfStat in your Matlab path
 % - This script requires that my curvature script, CurvatureDescriptors.m, is in your Matlab path
 % - This script reads mris_curvature output files that you will only have if you run my bash script to compute it, see run_cpc_for_all_surfaces_and_settings.bash or the GNU parallel version
+%
+%
+% To run this from a shell script or the command line: matlab -nojvm -nodisplay -nosplash -r "export_curvature_descriptors_single_subject('tim','./');quit()"
 
-clc;
-clear;
 
 %% Settings - you will have to adapt them to your needs.
 settings = struct;
