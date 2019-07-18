@@ -83,7 +83,7 @@ function [fh, region_names] = plot_data_in_atlas_regions(data_to_plot, atlas, he
         error("Invalid value for parameter 'hemi'. Must be one of ('lh', 'rh', 'both') but was '%s'.", hemi);
     end
 
-    colmap = parula;  % or try: lines, summer, winter, cold, hot, jet, lines, ...
+    colmap = hot;  % or try: lines, summer, winter, cold, hot, jet, lines, ...
     fh = plot_data_onto_subject(subject_id, subjects_dir, labels_lh, labels_rh, colmap, visualization_surface);
 
 end
