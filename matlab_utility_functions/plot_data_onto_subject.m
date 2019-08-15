@@ -1,10 +1,10 @@
-function fig_handle = plot_data_onto_subject(subject_id, subjects_dir, data_lh, data_rh, colmap, surf)
+function fig_handle = plot_data_onto_subject(subject_id, subjects_dir, data_lh, data_rh, colmap, surf, plot_title, color_bar_title)
 %% Display the data on a surface. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
 
 
 %plot_title = sprintf("Subject '%s'", subject_id);
-plot_title = '';
-color_bar_title = "Cohen's d";
+%plot_title = '';
+%color_bar_title = "Cohen's d";
 
 subject_surf_dir = fullfile(char(subjects_dir), char(subject_id), 'surf');
 lh_display_surf_file = fullfile(char(subject_surf_dir), char(strcat('lh.', surf)));
