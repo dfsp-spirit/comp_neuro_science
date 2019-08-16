@@ -84,6 +84,6 @@ function [fh, region_names] = plot_data_in_atlas_regions(data_to_plot, atlas, he
     end
 
     colmap = hot;  % or try: lines, summer, winter, cold, hot, jet, lines, ...
-    fh = plot_data_onto_subject(subject_id, subjects_dir, labels_lh, labels_rh, colmap, visualization_surface);
+    fh = plot_data_onto_subject(subject_id, subjects_dir, labels_lh, labels_rh, colmap, visualization_surface, '', '');
 
 end
