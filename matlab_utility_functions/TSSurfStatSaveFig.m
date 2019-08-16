@@ -17,16 +17,16 @@ export_overview_filename = sprintf('%s.%s', filename, fileext);
 
 if view == 'o'
     fprintf("Saving overall image only for base file name '%s'.\n", filename);
-    export_fig(export_overview_filename, '-transparent', '-r400');
+    export_fig(export_overview_filename, '-r400');
 elseif view == 'all'
     fprintf("Saving overall image and all individual views for base file name '%s'.\n", filename);
-    export_fig(export_overview_filename, '-transparent', '-r400');
+    export_fig(export_overview_filename, '-r400');
 
     h = get(gcf, 'children');
     for i = 1:length(h)
         export_subplot_file_name = sprintf('%s_plot%d.%s', filename, i, fileext);
         if get(h(i), 'type') == "axes"
-            export_fig(export_subplot_file_name, '-transparent', '-r400');
+            export_fig(export_subplot_file_name, '-r400');
         end
     end
 end
