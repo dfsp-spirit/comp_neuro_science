@@ -1,27 +1,32 @@
-function TSSurfStatSaveFig( filename , view );
+function TSSurfStatSaveFig(filename, fileext, view)
 
 % Export figure to image file(s) in PNG format.
 %
-% Usage: SurfStatSaveFig( clim , 'filename.png');
+% Usage: TSSurfStatSaveFig('filename' 'png', 'o');    for overview
+%        TSSurfStatSaveFig('filename', 'png', 'all');    for all sub images exported separately
 %
-% filenname : string, e.g. 'ct.group.t' or 'ct.group.ct'
-% view      : 'o' for overall or 'all' for all individuals
+% filenname : string, filename without extension
+% filext : string, file extension (e.g., 'png')
+% view      : 'o' for overall or 'all' for all individual sub images
 %
 %
 % Note on the resolution for export_fig, used below: From the README of export_fig:
 %   Resolution - by default, export_fig exports bitmaps at screen resolution. However, you may wish to save them at a different resolution. You can do this using either of two options: -m<val>, where is a positive real number, magnifies the figure by the factor for export, e.g. -m2 produces an image double the size (in pixels) of the on screen figure; -r<val>, again where is a positive real number, specifies the output bitmap to have pixels per inch, the dimensions of the figure (in inches) being those of the on screen figure.
-if view == 'o'
-    fprintf("Saving overall image only for '%s'.\n", filename);
-    export_fig(sprintf('%s', filename), '-transparent', '-r400');
-elseif view == 'all'
-    fprintf("Saving overall image and all individual views for '%s'.\n", filename);
-    export_fig(sprintf('%s', filename), '-transparent', '-r400');
-    h = get(gcf, 'children');
 
+export_overview_filename = sprintf('%s.%s', filename, fileext);
+
+if view == 'o'
+    fprintf("Saving overall image only for base file name '%s'.\n", filename);
+    export_fig(export_overview_filename, '-transparent', '-r400');
+elseif view == 'all'
+    fprintf("Saving overall image and all individual views for base file name '%s'.\n", filename);
+    export_fig(export_overview_filename, '-transparent', '-r400');
+
+    h = get(gcf, 'children');
     for i = 1:length(h)
-        export_file_name = sprintf('%s.plot%d', filename, i);
+        export_subplot_file_name = sprintf('%s_plot%d.%s', filename, i, fileext);
         if get(h(i), 'type') == "axes"
-            export_fig(h(i), export_file_name, '-transparent', '-r400');
+            export_fig(export_subplot_file_name, '-transparent', '-r400');
         end
     end
 end
