@@ -31,7 +31,7 @@ fig_handle = figure;
 %colormap(colmap);
 
 %SurfStatColormap(colmap);
-
+% SurfStatColLim([-1, 1]);
 [ ~, hcb ] = SurfStatView(data, display_surface, plot_title);
 colormap(colmap);
 
