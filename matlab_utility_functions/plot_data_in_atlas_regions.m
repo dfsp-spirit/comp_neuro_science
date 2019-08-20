@@ -1,4 +1,4 @@
-function [fh, region_names] = plot_data_in_atlas_regions(data_to_plot, atlas, hemi, subject_id, subjects_dir, visualization_surface)
+function [fh, region_names] = plot_data_in_atlas_regions(data_to_plot, atlas, hemi, subject_id, subjects_dir, visualization_surface, colmap)
 % Plots the data values in 'data_to_plot' onto the atlas regions for the given subject.
 %
 % Parameters:
@@ -83,7 +83,6 @@ function [fh, region_names] = plot_data_in_atlas_regions(data_to_plot, atlas, he
         error("Invalid value for parameter 'hemi'. Must be one of ('lh', 'rh', 'both') but was '%s'.", hemi);
     end
 
-    colmap = hot;  % or try: lines, summer, winter, cold, hot, jet, lines, ...
     fh = plot_data_onto_subject(subject_id, subjects_dir, labels_lh, labels_rh, colmap, visualization_surface, '', '');
 
 end
