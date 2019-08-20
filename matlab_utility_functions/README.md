@@ -29,7 +29,7 @@ Note that you will also need our standard Matlab packages, as my scripts use fun
 
 * The Freesurfer Matlab functions (in $FREESURFER_HOME/matlab/): for loading Freesurfer format files
 * [Surfstat](https://galton.uchicago.edu/faculty/InMemoriam/worsley/research/surfstat/) by Keith Worsley: for visualization and modeling
-
+* export_fig https://github.com/altmany/export_fig
 
 
 ## Example Workflow: load standard space area data for a list of subjects and plot it for one of them
