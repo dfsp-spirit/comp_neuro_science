@@ -3,15 +3,39 @@
 #   and freesurfer/matlab/load_mgh.m
 
 
-read_fs_mgh_file <- function(filepath) {
+read_fs_mgh_file <- function(filepath, is_gzipped = "AUTO") {
 
-    # we could use 'gzfile' here if the file extension suggests it.
-    is_gz = 1;
-    cat(sprintf("*Parsing header of file '%s'.\n", filepath));
-    if (is_gz == 1) {
+    if(typeof(is_gzipped) == "logical") {
+        is_gz = is_gzipped;
+    } else if (typeof(is_gzipped) == "character") {
+        if(is_gzipped == "AUTO") {
+            nc = nchar(filepath);
+            if(nc >= 3) {
+                ext = substrRight(filepath, 3);
+                if(tolower(ext) == "mgz") {
+                    is_gz = TRUE;
+                } else {
+                    is_gz = FALSE;
+                }
+            } else {
+                cat(sprintf("WARNING: is_gzipped set to 'AUTO' but file name is too short (%d chars) to determine compression from last 3 characters, assuming UNCOMPRESSED.\n", nc));
+                is_gz = FALSE;
+            }
+        } else {
+            cat(sprintf("ERROR: Argument is_gzipped must be 'AUTO' if it is a string.\n"));
+            quit(status=1);
+        }
+    } else {
+        cat(sprintf("ERROR: Argument is_gzipped must be logical (TRUE or FALSE) or 'AUTO'.\n"));
+        quit(status=1);
+    }
+
+    if (is_gz) {
+         cat(sprintf("*Parsing header of file '%s', assuming it is gz-compressed.\n", filepath));
         fh = gzfile(filepath, "rb");
     }
     else {
+        cat(sprintf("*Parsing header of file '%s', assuming it is NOT gz-compressed.\n", filepath));
         fh = file(filepath, "rb");
     }
 
@@ -114,6 +138,12 @@ read_byte <- function(filehandle) {
     b = readBin(filehandle, integer(), size=1, signed = FALSE);
     return(b);
 }
+
+
+substrRight <- function(x, n){
+  substr(x, nchar(x)-n+1, nchar(x))
+}
+
 
 cat(sprintf("==============file1==============\n"));
 test_file1 = file.path(path.expand("~"), "data", "tim_only", "tim", "surf", "lh.area.fwhm0.fsaverage.mgh");
