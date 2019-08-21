@@ -21,17 +21,13 @@ read_fs_curv_file <- function(filepath) {
 
 
 fread3 <- function(filehandle) {
-    b1 = read_byte(filehandle);
-    b2 = read_byte(filehandle);
-    b3 = read_byte(filehandle);
+    b1 = readBin(filehandle, integer(), size=1, signed = FALSE);
+    b2 = readBin(filehandle, integer(), size=1, signed = FALSE);
+    b3 = readBin(filehandle, integer(), size=1, signed = FALSE);
     res = bitwShiftL(b1, 16) + bitwShiftL(b2, 8) + b3;
     return(res);
 }
 
-read_byte <- function(filehandle) {
-    b = readBin(filehandle, integer(), size=1, signed = FALSE);
-    return(b);
-}
 
 test_file = file.path("/Users", "timschaefer", "data", "tim_only", "tim", "surf", "lh.area")
 read_fs_curv_file(test_file)

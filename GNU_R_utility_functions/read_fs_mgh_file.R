@@ -10,16 +10,17 @@ read_fs_mgh_file <- function(filepath, is_gzipped = "AUTO") {
     } else if (typeof(is_gzipped) == "character") {
         if(is_gzipped == "AUTO") {
             nc = nchar(filepath);
+            num_chars_to_inspect = 3; # last 3 chars
             if(nc >= 3) {
-                ext = substrRight(filepath, 3);
-                if(tolower(ext) == "mgz") {
+                ext = substr(filepath, nchar(filepath)-num_chars_to_inspect+1, nchar(filepath));
+                if(tolower(ext) == "mgz" || tolower(ext) == ".gz") {
                     is_gz = TRUE;
                 } else {
                     is_gz = FALSE;
                 }
             } else {
-                cat(sprintf("WARNING: is_gzipped set to 'AUTO' but file name is too short (%d chars) to determine compression from last 3 characters, assuming UNCOMPRESSED.\n", nc));
-                is_gz = FALSE;
+                cat(sprintf("WARNING: is_gzipped set to 'AUTO' but file name is too short (%d chars) to determine compression from last %d characters, assuming gz-compressed file.\n", nc, num_chars_to_inspect));
+                is_gz = TRUE;
             }
         } else {
             cat(sprintf("ERROR: Argument is_gzipped must be 'AUTO' if it is a string.\n"));
@@ -39,13 +40,13 @@ read_fs_mgh_file <- function(filepath, is_gzipped = "AUTO") {
         fh = file(filepath, "rb");
     }
 
-    v = fread1(fh);
-    ndim1 = fread1(fh);
-    ndim2 = fread1(fh);
-    ndim3  = fread1(fh);
-    nframes = fread1(fh);
-    dtype = fread1(fh);
-    dof = fread1(fh);
+    v = readBin(fh, integer(), n = 1, endian = "big");
+    ndim1 = readBin(fh, integer(), n = 1, endian = "big");
+    ndim2 = readBin(fh, integer(), n = 1, endian = "big");
+    ndim3  = readBin(fh, integer(), n = 1, endian = "big");
+    nframes = readBin(fh, integer(), n = 1, endian = "big");
+    dtype = readBin(fh, integer(), n = 1, endian = "big");
+    dof = readBin(fh, integer(), n = 1, endian = "big");
 
 
     cat(sprintf(" v=%d, ndim1=%d, ndim2=%d, ndim3=%d, nframes=%d, type=%d, dof=%d.\n", v, ndim1, ndim2, ndim3, nframes, dtype, dof));
@@ -53,7 +54,7 @@ read_fs_mgh_file <- function(filepath, is_gzipped = "AUTO") {
 
     unused_header_space_size_left = 256;
 
-    ras_good_flag = freadshort(fh);
+    ras_good_flag = readBin(fh, numeric(), n = 1, endian = "big");
     if(ras_good_flag == 1) {
         cat(sprintf(" 'RAS good' flag is set, reading RAS information.\n"));
         delta  = readBin(filehandle, float(), n = 3, endian = "big")
@@ -115,34 +116,6 @@ read_fs_mgh_file <- function(filepath, is_gzipped = "AUTO") {
     return(data);
 }
 
-# read a single integer
-fread1 <- function(filehandle) {
-    return(readBin(filehandle, integer(), n = 1, endian = "big"));
-}
-
-# read a short
-freadshort <- function(filehandle) {
-    return(readBin(filehandle, numeric(), n = 1, endian = "big"));
-}
-
-# read a 3 byte integer
-fread3 <- function(filehandle) {
-    b1 = read_byte(filehandle);
-    b2 = read_byte(filehandle);
-    b3 = read_byte(filehandle);
-    res = bitwShiftL(b1, 16) + bitwShiftL(b2, 8) + b3;
-    return(res);
-}
-
-read_byte <- function(filehandle) {
-    b = readBin(filehandle, integer(), size=1, signed = FALSE);
-    return(b);
-}
-
-
-substrRight <- function(x, n){
-  substr(x, nchar(x)-n+1, nchar(x))
-}
 
 
 cat(sprintf("==============file1==============\n"));
