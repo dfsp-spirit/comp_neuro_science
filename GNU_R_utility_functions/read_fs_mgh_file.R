@@ -7,7 +7,7 @@ read_fs_mgh_file <- function(filepath) {
 
     # we could use 'gzfile' here if the file extension suggests it.
 
-    cat(sprintf("Parsing header of file '%s'.\n", filepath));
+    cat(sprintf("*Parsing header of file '%s'.\n", filepath));
     fh = file(filepath, "rb");
 
     v = fread1(fh);
@@ -38,7 +38,7 @@ read_fs_mgh_file <- function(filepath) {
     }
     cat(sprintf(" There are %d unused header bytes left that will be skipped (data starts at fixed index).\n", unused_header_space_size_left));
 
-    cat(sprintf("Reading data.\n"));
+    cat(sprintf("*Reading data.\n"));
     seek(fh, where = unused_header_space_size_left, origin = "current"); # skip to end of header/beginning of data
 
     nv = ndim1 * ndim2 * ndim3 * nframes;
@@ -48,10 +48,8 @@ read_fs_mgh_file <- function(filepath) {
     # Determine size of voxel data, depending on dtype from header above
     MRI_UCHAR = 0;
     MRI_INT = 1;
-    MRI_LONG = 2;
     MRI_FLOAT = 3;
     MRI_SHORT = 4;
-    MRI_BITMAP = 5;
 
     # Determine number of bytes per voxel
     if(dtype == MRI_FLOAT) {
@@ -63,14 +61,24 @@ read_fs_mgh_file <- function(filepath) {
     } else if (dtype == MRI_INT) {
         nbytespervox = 4;
     } else {
-       cat(sprintf("ERROR: Unexpected data type found in header. Expected one of (0, 1, 3, 4) but got %d.\n"), dtype);
+       cat(sprintf(" ERROR: Unexpected data type found in header. Expected one of (0, 1, 3, 4) but got %d.\n"), dtype);
        quit(status=1);
     }
-    cat(sprintf("Data type found in header is %d, with %d bytes per voxel.\n", dtype, nbytespervox));
+    cat(sprintf(" Data type found in header is %d, with %d bytes per voxel.\n", dtype, nbytespervox));
 
-    #data = readBin(fh, numeric(), size = 4, n = num_verts, endian = "big");
-    #cat(sprintf("Data read, min=%f, max=%f.\n", min(data), max(data)));
+    data = readBin(fh, numeric(), size = nbytespervox, n = nv, endian = "big");
+    num_read = prod(length(data));
+    if (num_read == nv) {
+        cat(sprintf(" OK, read %d voxel values as expected.\n", num_read));
+    } else {
+        cat(sprintf(" WARNING, read %d voxel values but expected to read %d.\n", num_read, nv));
+    }
+
+    # Reshape to expected dimensions
+    data = array(data, dim = c(ndim1, ndim2, ndim3, nframes));
+    cat(sprintf(" Reshaped array to expected dimensions: %s\n", paste(dim(data), collapse = ' ')));
     close(fh);
+    return(data);
 }
 
 # read a single integer
@@ -97,5 +105,6 @@ read_byte <- function(filehandle) {
     return(b);
 }
 
-test_file = file.path(path.expand("~"), "data", "tim_only", "tim", "surf", "lh.area.fwhm0.fsaverage.mgh")
-read_fs_mgh_file(test_file)
+test_file = file.path(path.expand("~"), "data", "tim_only", "tim", "surf", "lh.area.fwhm0.fsaverage.mgh");
+data = read_fs_mgh_file(test_file);
+cat(sprintf("Data read. min=%f, max=%f.\n", min(data), max(data)));
