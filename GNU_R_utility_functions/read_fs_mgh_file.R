@@ -36,12 +36,37 @@ read_fs_mgh_file <- function(filepath) {
     } else {
         cat(sprintf(" 'RAS good' flag is NOT set, no RAS information to read.\n"));
     }
-    cat(sprintf(" There are %d header bytes left.\n", unused_header_space_size_left));
+    cat(sprintf(" There are %d unused header bytes left that will be skipped (data starts at fixed index).\n", unused_header_space_size_left));
 
     cat(sprintf("Reading data.\n"));
+    seek(fh, where = unused_header_space_size_left, origin = "current"); # skip to end of header/beginning of data
+
     nv = ndim1 * ndim2 * ndim3 * nframes;
     volsz = c(ndim1, ndim2, ndim3, nframes);
     cat(sprintf(" Expecting %d voxels total.\n", nv));
+
+    # Determine size of voxel data, depending on dtype from header above
+    MRI_UCHAR = 0;
+    MRI_INT = 1;
+    MRI_LONG = 2;
+    MRI_FLOAT = 3;
+    MRI_SHORT = 4;
+    MRI_BITMAP = 5;
+
+    # Determine number of bytes per voxel
+    if(dtype == MRI_FLOAT) {
+        nbytespervox = 4;
+    } else if(dtype == MRI_UCHAR) {
+        nbytespervox = 1;
+    } else if (dtype == MRI_SHORT) {
+        nbytespervox = 2;
+    } else if (dtype == MRI_INT) {
+        nbytespervox = 4;
+    } else {
+       cat(sprintf("ERROR: Unexpected data type found in header. Expected one of (0, 1, 3, 4) but got %d.\n"), dtype);
+       quit(status=1);
+    }
+    cat(sprintf("Data type found in header is %d, with %d bytes per voxel.\n", dtype, nbytespervox));
 
     #data = readBin(fh, numeric(), size = 4, n = num_verts, endian = "big");
     #cat(sprintf("Data read, min=%f, max=%f.\n", min(data), max(data)));
