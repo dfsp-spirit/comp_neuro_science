@@ -19,16 +19,14 @@ read_fs_mgh_file <- function(filepath, is_gzipped = "AUTO") {
                     is_gz = FALSE;
                 }
             } else {
-                cat(sprintf("WARNING: is_gzipped set to 'AUTO' but file name is too short (%d chars) to determine compression from last %d characters, assuming gz-compressed file.\n", nc, num_chars_to_inspect));
+                warning(sprintf("Argument 'is_gzipped set' to 'AUTO' but file name is too short (%d chars) to determine compression from last %d characters, assuming gz-compressed file.\n", nc, num_chars_to_inspect));
                 is_gz = TRUE;
             }
         } else {
-            cat(sprintf("ERROR: Argument is_gzipped must be 'AUTO' if it is a string.\n"));
-            quit(status=1);
+            stop("Argument 'is_gzipped' must be 'AUTO' if it is a string.\n");
         }
     } else {
-        cat(sprintf("ERROR: Argument is_gzipped must be logical (TRUE or FALSE) or 'AUTO'.\n"));
-        quit(status=1);
+        stop(sprintf("ERROR: Argument is_gzipped must be logical (TRUE or FALSE) or 'AUTO'.\n"));
     }
 
     if (is_gz) {
@@ -68,10 +66,10 @@ read_fs_mgh_file <- function(filepath, is_gzipped = "AUTO") {
     }
     cat(sprintf(" There are %d unused header bytes left that will be skipped (data starts at fixed index).\n", unused_header_space_size_left));
 
-    cat(sprintf("*Reading data.\n"));
-    seek(fh, where = unused_header_space_size_left, origin = "current"); # skip to end of header/beginning of data
+    # Skip to end of header/beginning of data
+    seek(fh, where = unused_header_space_size_left, origin = "current");
 
-    nv = ndim1 * ndim2 * ndim3 * nframes;
+    nv = ndim1 * ndim2 * ndim3 * nframes;   # number of voxels
     volsz = c(ndim1, ndim2, ndim3, nframes);
     cat(sprintf(" Expecting %d voxels total.\n", nv));
 
@@ -89,15 +87,15 @@ read_fs_mgh_file <- function(filepath, is_gzipped = "AUTO") {
         data = readBin(fh, numeric(), size = nbytespervox, n = nv, endian = "big");
     } else if(dtype == MRI_UCHAR) {
         nbytespervox = 1;
-        data = readBin(fh, integer(), size = 1, n = nv, signed = FALSE, endian = "big");
+        data = readBin(fh, integer(), size = nbytespervox, n = nv, signed = FALSE, endian = "big");
     } else if (dtype == MRI_SHORT) {
+        nbytespervox = 2;
         data = readBin(fh, integer(), size = nbytespervox, n = nv, endian = "big");
     } else if (dtype == MRI_INT) {
         nbytespervox = 4;
         data = readBin(fh, int(), size = nbytespervox, n = nv, endian = "big");
     } else {
-       cat(sprintf(" ERROR: Unexpected data type found in header. Expected one of {0, 1, 3, 4} (%s) but got %d.\n", dt_explanation, dtype));
-       quit(status=1);
+       stop(sprintf(" ERROR: Unexpected data type found in header. Expected one of {0, 1, 3, 4} (%s) but got %d.\n", dt_explanation, dtype));
     }
     cat(sprintf(" Data type found in header is %d (%s), with %d bytes per voxel.\n", dtype, dt_explanation, nbytespervox));
 
@@ -120,7 +118,7 @@ read_fs_mgh_file <- function(filepath, is_gzipped = "AUTO") {
 
 cat(sprintf("==============file1==============\n"));
 test_file1 = file.path(path.expand("~"), "data", "tim_only", "tim", "surf", "lh.area.fwhm0.fsaverage.mgh");
-data1 = read_fs_mgh_file(test_file1);
+data1 = read_fs_mgh_file(test_file1, is_gzipped="AUTO");
 cat(sprintf("data1 read. min=%f, max=%f.\n", min(data1), max(data1)));
 cat(sprintf("==============file2==============\n"));
 test_file2 = file.path(path.expand("~"), "data", "tim_only", "tim", "mri", "T1.mgz");
