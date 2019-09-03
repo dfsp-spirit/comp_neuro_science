@@ -31,8 +31,9 @@ scatter_marg_hist <- function(dataframe, x_column, y_column, fill_column, palett
     # Combine all 3 plots:
     p1 <- insert_xaxis_grob(pmain, xdens, grid::unit(.2, "null"), position = "top")
     p2 <- insert_yaxis_grob(p1, ydens, grid::unit(.2, "null"), position = "right")
-    ggdraw(p2)
+    p = ggdraw(p2)
 
     # Actually show the plot. You may or may not want this.
-    plot(p2)
+    plot(p)
+    return(p)
 }
