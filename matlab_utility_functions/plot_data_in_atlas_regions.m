@@ -22,16 +22,25 @@ function [fh, region_names] = plot_data_in_atlas_regions(data_to_plot, atlas, he
 % 'subjects_dir': string, path to a directory containing the subject.
 % Example: "~/data/mystudy" or "/Applications/freesurfer/subjects".
 %
-% 'visualization_surface': string, the surface to use for visualization. Examples: 'white', 'pial', or 'inflated'. Must exist for subject.
+% 'visualization_surface': string, the surface to use for visualization.
+% Examples: 'white', 'pial', or 'inflated'. Must exist for subject.
+% Deafults to 'white.'
 %
-% TODO: The function signature does not yet expose the colormap and brain surface
-% used in the visualization.
+% 'colmap': a colormap, e.g., 'jet', 'winter' or whatever. Defaults to
+% 'jet'.
 %
 % Full usage example:
 %
 % random_data = normrnd(0, 1, [72, 1]);   % Draw 72 values from normal distribution with mean 0 and stddev 1. You may want to plot something that makes more sense. ;)
 % [fh, region_names] = plot_data_in_atlas_regions(random_data, "aparc", "both", "bert", "/Applications/freesurfer/subjects", "white")
 
+     if ~exist('visualization_surface', 'var')    
+        visualization_surface = 'white';
+     end
+
+     if ~exist('colmap', 'var')    
+        colmap = jet;
+     end
 
     aparc_file_lh = fullfile(char(subjects_dir), char(subject_id), 'label', char(sprintf("lh.%s.annot", atlas)));
     aparc_file_rh = fullfile(char(subjects_dir), char(subject_id), 'label', char(sprintf("rh.%s.annot", atlas)));
