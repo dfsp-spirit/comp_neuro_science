@@ -18,7 +18,8 @@ end
 
 display_surface = SurfStatReadSurf ( {lh_display_surf_file, rh_display_surf_file} );
 
-measure_data = read_subject_data(subject_id, subjects_dir, measure, surf);
+hemi = 'both';
+measure_data = read_subject_data(subject_id, subjects_dir, measure, surf, hemi);
 
 figure;
 SurfStatView(measure_data, display_surface, plot_title);
