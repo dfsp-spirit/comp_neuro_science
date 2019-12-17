@@ -33,9 +33,11 @@ function [borderVertices] = label_border(surf_verts, surf_faces, label_vert_indi
 %
 %  lb = label_border(verts, faces, lbl);
 %    
+fprintf("Surface consists of %d vertices and %d faces.\n", size(surf_verts, 1), size(surf_faces,1));
+
 label_faces = mesh_verts_included_faces(surf_faces, label_vert_indices);
-fprintf("Surface consists of %d vertices and %d faces.\n", size(surf_verts, 1), size(surf_faces,1))
-fprintf("Found %d label faces which are made up of the %d label vertices.\n", length(label_faces), length(label_vert_indices));
+label_edges = get_face_edges(surf_faces, label_faces);
+fprintf("Found %d label faces and %d label edges which are made up of the %d label vertices.\n", length(label_faces), size(label_edges,1), length(label_vert_indices));
 borderVertices = [1,2,3];
 end
 
@@ -49,4 +51,15 @@ for face_idx = 1:size(faces,1)
     face_is_included(face_idx) = all(ismember(faces(face_idx,:), query_verts));
 end
 face_indices = find(face_is_included);
+end
+
+% Find all edges of all the given faces.
+% Returns a 2D matrix of size (n,2) for n edges. Edges may occur several
+% times (and in arbitrary order for the source and target vertices defining
+% an edge, i.e., they are not sorted).
+function [face_edges] = get_face_edges(surface_faces, query_face_indices)
+    e1 = surface_faces(query_face_indices, 1:2);
+    e2 = surface_faces(query_face_indices, 2:3);
+    e3 = surface_faces(query_face_indices, [3,1]);
+    face_edges = [e1; e2; e3];
 end
