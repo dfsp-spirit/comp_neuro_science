@@ -34,13 +34,31 @@ function [border_vertices, border_edges, border_faces] = label_border(surf_verts
 %   border_faces: integer vector, the indices of the border faces. I.e.,
 %   these are indices into surf_faces.
 %
-%   Example:
-%  [verts, faces] = read_surf("~/data/bert_only/bert/surf/lh.white");
+%   Full Usage Example:
+%  % Load the data
+%  % compute the label border
+%  subjects_dir = "~/data/bert_only/";
+%  subject_id = "bert";
+%  surf = "inflated";
+%  [verts, faces] = read_surf(fullfile(subjects_dir, subject_id, 'surf', strcat('lh.', surf)));
 %
-%  setenv("SUBJECTS_DIR", "~/data/bert_only");
-%  [lbl] = read_label("bert", "lh.bankssts");
+%  setenv("SUBJECTS_DIR", subjects_dir);
+%  [lbl] = read_label(subject_id, "lh.bankssts");  % Or use your cluster.
 %
 %  lb = label_border(verts, faces, lbl);
+%
+%  % Draw the border. This is not part of this function, but very useful to
+%  % judge the output (and usually the reason why one calls this function):
+% 
+%  subject_surf_dir = fullfile(subjects_dir, subject_id, 'surf');
+%  lh_display_surf_file = fullfile(subject_surf_dir, strcat('lh.', surf));
+%  rh_display_surf_file = fullfile(subject_surf_dir, strcat('rh.', surf));
+%  display_surface = SurfStatReadSurf ( {lh_display_surf_file, rh_display_surf_file} );
+%  hemi = 'both';
+%  measure_data = read_subject_data(subject_id, subjects_dir, measure, surf, hemi);
+%  measure_data(border_vertices) = -8; % or whatever value to see it.
+%  figure;
+%  SurfStatView(measure_data, display_surface, 'Label border');
 %    
 %
 %  Written by Tim Schaefer, 2019-12-17
