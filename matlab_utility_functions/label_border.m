@@ -1,4 +1,4 @@
-function [borderVertices] = label_border(surf_verts, surf_faces, label_vert_indices)
+function [border_vertices, border_edges, border_faces] = label_border(surf_verts, surf_faces, label_vert_indices)
 %label_border Compute border of a FreeSurfer label
 %   This function takes a label (i.e., a set of adjacent vertices) on a
 %   brain surface mesh and computes the subset of the vertices which form
@@ -23,9 +23,18 @@ function [borderVertices] = label_border(surf_verts, surf_faces, label_vert_indi
 %      that is not checked and up to the user. Typically, this is a cluster
 %      defined on the fsaverage surface.
 %
-% . Return Value: integer vector, the indices of the border vertices.
+%   Return Values: 
+%   
+%   border_vertices: integer vector, the indices of the border vertices.
+%   I.e., these are indices into surf_verts.
 %
-% Example:
+%   border_edges: integer matrix of size (n,2) for n edges. Each row
+%   defined an edge by the indices of its start and end vertices.
+%
+%   border_faces: integer vector, the indices of the border faces. I.e.,
+%   these are indices into surf_faces.
+%
+%   Example:
 %  [verts, faces] = read_surf("~/data/bert_only/bert/surf/lh.white");
 %
 %  setenv("SUBJECTS_DIR", "~/data/bert_only");
@@ -33,18 +42,43 @@ function [borderVertices] = label_border(surf_verts, surf_faces, label_vert_indi
 %
 %  lb = label_border(verts, faces, lbl);
 %    
+%
+%  Written by Tim Schaefer, 2019-12-17
+%   
+
 fprintf("Surface consists of %d vertices and %d faces.\n", size(surf_verts, 1), size(surf_faces,1));
 
+% Compute all faces consisting ONLY of label vertices
 label_faces = mesh_verts_included_faces(surf_faces, label_vert_indices);
-label_edges = get_face_edges(surf_faces, label_faces);
-fprintf("Found %d label faces and %d label edges which are made up of the %d label vertices.\n", length(label_faces), size(label_edges,1), length(label_vert_indices));
-sorted_edges = sort(label_edges, 2);  % Sort source and target vertices of edges, to be able to properly count (u, v) and (v, u) as 2 occurrences of the same edge later.
-[unique_edges,~,ic] = unique(sorted_edges, 'rows');  % Identify the unique edges.
-unique_edge_num_occurrences = accumarray(ic, 1);     % Count how often each unique edge occurs.
-unique_edge_counts = [unique_edges unique_edge_num_occurrences];  % Each row contains 3 int values: edge_start, end_end (with edge_stat < edge_end), and count 
-border_edges = unique_edge_counts(unique_edge_counts(:,3)==1,1:2);  % Border edges are unique edges that occur only once over all faces. That is because the second face adjacent to the edge is not part of the label.
 
-borderVertices = border_edges;
+% Compute all edges consisting ONLY of label vertices
+label_edges = get_face_edges(surf_faces, label_faces);
+fprintf("Found %d label faces and %d label edges based on the %d label vertices.\n", length(label_faces), size(label_edges,1), length(label_vert_indices));
+
+ % Sort source and target vertices of edges, to be able to properly count (u, v) and (v, u) as 2 occurrences of the same edge later.
+sorted_edges = sort(label_edges, 2); 
+
+ % Identify the unique edges (sorted, so (u, v) and (v, u) will be counted as the same edge).
+[unique_edges,~,ic] = unique(sorted_edges, 'rows'); 
+
+% Count how often each unique edge occurs.
+unique_edge_num_occurrences = accumarray(ic, 1);    
+
+% Merge unique edges and their counts. Each row contains 3 int values: edge_start, end_end (with edge_start < edge_end), and count. 
+unique_edge_counts = [unique_edges unique_edge_num_occurrences];
+
+% Compute border edges. Border edges are unique edges that occur only once over all faces. 
+% That is because the second face adjacent to the respective border edge is not part of the label.
+border_edges = unique_edge_counts(unique_edge_counts(:,3)==1,1:2);
+
+% Compute the border vertices from the border edges.
+border_vertices = unique(reshape(border_edges,1,[]));
+
+% Compute the border faces from the vertices. Vertices and edges alone are
+% not great for visualizing something on a mesh, coloring the whole face
+% looks way better.
+border_faces = mesh_verts_included_faces(surf_faces, border_vertices);
+fprintf("Computed border consisting of %d vertices, %d edges and %d faces.\n", length(border_vertices), size(border_edges,1), length(border_faces));
 end
 
 
@@ -60,7 +94,7 @@ face_indices = find(face_is_included);
 end
 
 
-% Find all edges of all the given faces.
+% Find all edges of all the given faces in the mesh.
 % Returns a 2D matrix of size (n,2) for n edges. Each row contains two integer
 % values, which are the vertex indices of the source and the target vertex of
 % the respective edge.
