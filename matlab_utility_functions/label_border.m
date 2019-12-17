@@ -1,9 +1,13 @@
 function [border_vertices, border_edges, border_faces] = label_border(surf_verts, surf_faces, label_vert_indices)
-%label_border Compute border of a FreeSurfer label
+%LABEL_BORDER Compute border of a FreeSurfer label
 %   This function takes a label (i.e., a set of adjacent vertices) on a
 %   brain surface mesh and computes the subset of the vertices which form
-%   the label border.
+%   the outer label border (or its outline).
 %   This is useful for visualizing the outline of the label.
+%
+%  TODO: The surf_verts and surf_faces loaded by the FreeSurfer functions
+%  use 0-based indices. Check whether this is fine, or values+1 must be
+%  passed.
 %
 %   Parameters:
 %   
@@ -29,7 +33,7 @@ function [border_vertices, border_edges, border_faces] = label_border(surf_verts
 %   I.e., these are indices into surf_verts.
 %
 %   border_edges: integer matrix of size (n,2) for n edges. Each row
-%   defined an edge by the indices of its start and end vertices.
+%   defines an edge by the indices of its start and end vertices.
 %
 %   border_faces: integer vector, the indices of the border faces. I.e.,
 %   these are indices into surf_faces.
