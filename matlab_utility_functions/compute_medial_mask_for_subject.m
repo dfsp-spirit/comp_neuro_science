@@ -17,6 +17,25 @@ function [lh_mask, rh_mask] = compute_medial_mask_for_subject(subject_id, subjec
 %
 % Requires standard FreeSurfer MATLAB functions read_label and read_surf.
 %
+% USAGE EXAMPLE: 
+%
+% % Start by loading data and mask:
+% subjects_dir = '/Applications/freesurfer/subjects';
+% subject_id = 'bert';
+% data_lh =  read_subject_data(subject_id, subjects_dir, 'thickness', 'white', 'lh');
+% data_rh =  read_subject_data(subject_id, subjects_dir, 'thickness', 'white', 'rh');
+% [mask_lh, mask_rh] = compute_medial_mask_for_subject(subject_id, subjects_dir);
+%
+% % Now set values of all medial wall vertices to (arbitrary value) 9 for right hemi:
+% data_rh(find(~mask_rh)) = 9;
+%
+% % Or set the values of all medial wall vertices to zero for left hemi:
+% data_lh = data_lh .* mask_lh;
+%
+% % And show the results:
+% plot_data_onto_subject(subject_id, subjects_dir, data_lh, data_rh, jet, 'inflated', 'CT', 'mm')
+%
+%
 % Written by Tim, 2020-01-23
 
 subjects_dir_before = getenv("SUBJECTS_DIR");  % save old env var value
@@ -43,10 +62,10 @@ subject_surf_dir_path = sprintf("%s/%s/surf/", subjects_dir, subject_id);
 num_verts_lh = length(lh_verts);
 num_verts_rh = length(rh_verts);
 
-lh_mask = zeros(1, num_verts_lh);
+lh_mask = zeros(num_verts_lh, 1);
 lh_mask(lh_cortex_indices) = 1;
 
-rh_mask = zeros(1, num_verts_rh);
+rh_mask = zeros(num_verts_rh, 1);
 rh_mask(rh_cortex_indices) = 1;
 
 % Restore ENV variable
