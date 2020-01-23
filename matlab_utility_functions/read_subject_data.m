@@ -2,7 +2,10 @@ function measure_data = read_subject_data(subject_id, subjects_dir, measure, sur
 %% Read subject morphometry data. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
 %% Assumes that the morphometry data files are in curv format (like lh.area).
 % hemi: must be 'lh', 'rh', or 'both'
-
+% surf: should be 'white'
+% USAGE Example: 
+% lh_thickness =  read_subject_data('bert',
+% '/Applications/freesurfer/subjects', 'thickness', 'white', 'lh');
 
 
 subject_surf_dir = fullfile(char(subjects_dir), char(subject_id), 'surf');
@@ -15,6 +18,10 @@ lh_data_file = fullfile(char(subject_surf_dir), char(lh_data_filename));
 rh_data_file = fullfile(char(subject_surf_dir), char(rh_data_filename));
 
 measure_data = 0;
+
+if ~(strcmp(hemi, 'lh') || strcmp(hemi, 'both') || strcmp(hemi, 'rh'))
+    error("Invaild hemi, must be one of 'lh', 'rh' or 'both'")
+end
 
 if strcmp(hemi, 'lh') || strcmp(hemi, 'both')
     if exist(lh_data_file, 'file') ~= 2

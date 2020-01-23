@@ -1,5 +1,11 @@
 function fig_handle = plot_data_onto_subject(subject_id, subjects_dir, data_lh, data_rh, colmap, surf, plot_title, color_bar_title)
 %% Display the data on a surface. Requires surfstat in your MATLAB path, see http://www.math.mcgill.ca/keith/surfstat/.
+% USAGE Example: 
+% subjects_dir = '/Applications/freesurfer/subjects';
+% subject_id = 'bert';
+% data_lh =  read_subject_data(subject_id, subjects_dir, 'thickness', 'white', 'lh');
+% data_rh =  read_subject_data(subject_id, subjects_dir, 'thickness', 'white', 'rh');
+% plot_data_onto_subject(subject_id, subjects_dir, data_lh, data_rh, jet, 'inflated', 'CT', 'mm')
 
 if ~exist('color_bar_title', 'var')    
     color_bar_title = '';

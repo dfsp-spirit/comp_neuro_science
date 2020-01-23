@@ -15,6 +15,10 @@ rh_data_file = fullfile(subject_surf_dir, rh_data_filename);
 
 measure_data = 0;
 
+if ~(strcmp(hemi, 'lh') || strcmp(hemi, 'both') || strcmp(hemi, 'rh'))
+    error("Invaild hemi, must be one of 'lh', 'rh' or 'both'")
+end
+
 if strcmp(hemi, 'lh') || strcmp(hemi, 'both')
     if exist(lh_data_file, 'file') ~= 2
         error("The lh data file '%s' does not exist. Check the path.\n", lh_data_file);
