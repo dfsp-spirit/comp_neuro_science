@@ -39,10 +39,16 @@ function [border_vertices, border_edges, border_faces] = label_border(surf_verts
 %   these are indices into surf_faces.
 %
 %   Full Usage Example:
-%  % Load the data
+%  % Load the data -- we will use fsaverage from FREESURFER_HOME here, use whatever subject you want.
+%  %  
 %  % compute the label border
-%  subjects_dir = "~/data/bert_only/";
-%  subject_id = "bert";
+%  
+%  subjects_dir = sprintf("%s/subjects/", getenv("FREESURFER_HOME"));
+%  if ~exist(subjects_dir, 'dir')
+%      fprintf("Cannot find fsaverage, please check/set environment
+%      variable 'FREESURFER_HOME'.");
+%  end
+%  subject_id = "fsaverage";
 %  surf = "inflated";
 %  [verts, faces] = read_surf(fullfile(subjects_dir, subject_id, 'surf', strcat('lh.', surf)));
 %
@@ -123,7 +129,7 @@ end
 % Note that edges may occur several times in the result if part of multiple
 % faces. Also, they can (and will) be in
 % arbitrary order for the source and target vertices defining
-% an edge, i.e., they are not sorted with the rows.
+% an edge, i.e., they are not sorted within the rows.
 function [face_edges] = get_face_edges(surface_faces, query_face_indices)
     e1 = surface_faces(query_face_indices, 1:2);
     e2 = surface_faces(query_face_indices, 2:3);

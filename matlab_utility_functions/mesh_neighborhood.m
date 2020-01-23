@@ -24,6 +24,8 @@ end
 % Find all mesh faces which are adjacent to the query vertices.
 % Returns 2 integer lists, the face indices and vertex indices.
 % Uses only faces which consist *ONLY* of the query_verts (all verts have to be source verts).
+% Note that this function will return an empty vector if your query_verts are
+% isoloated vertices (because no face will be spanned by them).
 function [neigh_face_indices, neigh_vertex_indices] = mesh_verts_adjacent_faces_all(faces, query_verts)
 num_faces = size(faces,1);
 face_is_included = zeros(num_faces,1);
