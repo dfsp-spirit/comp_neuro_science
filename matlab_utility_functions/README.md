@@ -29,8 +29,10 @@ Note that you will also need our standard Matlab packages, as my scripts use fun
 
 * The Freesurfer Matlab functions (in $FREESURFER_HOME/matlab/): for loading Freesurfer format files
 * [Surfstat](https://galton.uchicago.edu/faculty/InMemoriam/worsley/research/surfstat/) by Keith Worsley: for visualization and modeling
+* bioelectromagnetism toolbox: ftp://sccn.ucsd.edu/pub/bioelectromagnetism.zip
 * export_fig https://github.com/altmany/export_fig
 
+All of these are free (in the sense that they do not cost money). No commercial matlab toolbox is required (but of course Matlab itself).
 
 ## Example Workflow: load standard space area data for a list of subjects and plot it for one of them
 
