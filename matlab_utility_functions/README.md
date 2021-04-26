@@ -31,6 +31,7 @@ Note that you will also need our standard Matlab packages, as my scripts use fun
 * [Surfstat](https://www.math.mcgill.ca/keith/surfstat/) by Keith Worsley: for visualization and modeling
 * bioelectromagnetism toolbox: ftp://sccn.ucsd.edu/pub/bioelectromagnetism.zip
 * export_fig https://github.com/altmany/export_fig
+* cbrwer from https://github.com/DrosteEffect/BrewerMap or from https://de.mathworks.com/matlabcentral/fileexchange/45208-colorbrewer-attractive-and-distinctive-colormaps
 
 All of these are free (in the sense that they do not cost money). No commercial matlab toolbox is required (but of course Matlab itself).
 
