@@ -16,7 +16,7 @@ Now add *~/matlab/comp_neuro_science/matlab_utility_functions/* to your Matlab p
 
 Should it happen again in the future, just do the following to get any new utility functions I added in the meantime:
 
-    cd ~/matlab/
+    cd ~/matlab/comp_neuro_science/
     git pull
 
 ## Credits
