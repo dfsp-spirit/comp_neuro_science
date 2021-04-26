@@ -28,7 +28,7 @@ Not all of these were written by me, some are from Matlab file exchange. See the
 Note that you will also need our standard Matlab packages, as my scripts use functions from them as well:
 
 * The Freesurfer Matlab functions (in $FREESURFER_HOME/matlab/): for loading Freesurfer format files
-* [Surfstat](https://galton.uchicago.edu/faculty/InMemoriam/worsley/research/surfstat/) by Keith Worsley: for visualization and modeling
+* [Surfstat](https://www.math.mcgill.ca/keith/surfstat/) by Keith Worsley: for visualization and modeling
 * bioelectromagnetism toolbox: ftp://sccn.ucsd.edu/pub/bioelectromagnetism.zip
 * export_fig https://github.com/altmany/export_fig
 
